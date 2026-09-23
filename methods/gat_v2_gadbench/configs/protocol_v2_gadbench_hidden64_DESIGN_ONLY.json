@@ -1,0 +1,49 @@
+{
+  "status": "DESIGN_FROZEN_NOT_EXECUTABLE",
+  "protocol_version": "protocol_v2_gadbench_hidden64",
+  "method": "GAT",
+  "model_source": {
+    "repository": "https://github.com/squareroot3/GADBench.git",
+    "commit": "f9aa021ce9b6c6580427fb633b596843be76ddc6",
+    "model_file": "models/attention.py",
+    "model_file_sha256": "194dae9f7af7057fc17e954263996a232b830ca25a429686146bbbde65611e08"
+  },
+  "model": {
+    "architecture": "BaseModel input Linear+GELU; two residual GATModule+FFN blocks; output Linear logits",
+    "hidden_total_dim": 64,
+    "num_heads": 4,
+    "per_head_dim": 16,
+    "num_gat_blocks": 2,
+    "attention_negative_slope": 0.2,
+    "activation": "GELU",
+    "drop_rate": 0.0,
+    "feature_dropout": "not_a_separate_GADBench_GAT_parameter",
+    "attention_coefficient_dropout": "not_a_separate_GADBench_GAT_parameter",
+    "class_weight": "[1.0, train_normal_count/train_anomaly_count] from frozen train_mask only"
+  },
+  "optimizer": {"name": "Adam", "learning_rate": 0.01, "weight_decay": 0.0},
+  "training": {
+    "max_epoch": 200,
+    "patience": 50,
+    "early_stop_metric": "validation_AUPRC",
+    "checkpoint_metric": "validation_AUPRC_best"
+  },
+  "project_unified_evaluation": {
+    "datasets": "six existing verified HSMAD datasets",
+    "masks": "existing frozen HSMAD train/val/test masks",
+    "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+    "future_training_seeds": [0,1,2,3,4,5,6,7,8,9],
+    "threshold": "validation_F1_macro grid 0.05..0.95",
+    "test_metrics": ["F1-Macro", "AUROC_softmax_logits_class_1"],
+    "edge_access": "graph_edges_required"
+  },
+  "provenance": {
+    "hidden_total_dim": "HSMAD论文",
+    "optimizer": "HSMAD论文",
+    "learning_rate": "HSMAD论文_and_GADBench官方实现",
+    "model_structure": "GADBench官方实现",
+    "class_weight_and_training": "GADBench官方实现",
+    "evaluation_and_isolation": "项目统一评价协议",
+    "unpublished_inference": "HSMAD hidden=64 mapped to GADBench total h_feats"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "protocol_version": "protocol_v2_gadbench_hidden64",
+  "run_type": "smoke",
+  "dataset_file": "datasets/weibo",
+  "result_dir": "results/experiments/gat_v2_gadbench/weibo/protocol_v2_gadbench_hidden64/smoke/seed_0",
+  "seed": 0,
+  "max_epoch": 5,
+  "h_feats": 64,
+  "num_heads": 4,
+  "per_head_dim": 16,
+  "drop_rate": 0.0,
+  "class_weight": "[1.0, train_normal_count/train_anomaly_count] from frozen train_mask",
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "edge_access": "graph_edges_required",
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95",
+  "checkpoint_protocol": "smoke_final_epoch_5_no_early_stop",
+  "expected_training_graph_edges": 762947,
+  "expected_hashes": {
+    "feature_sha256": "ea596cb6982c8cfcbab8a420fecf571dd258e22d4022007a2121a4b948afaa45",
+    "label_sha256": "4ae5a95b9a52b7b065144f91c13036785fb60115748b886d5e266509ac2b3ec8",
+    "train_mask_sha256": "017423ff367b7e4580e4a705e86c056394a6a4abf448af1e037340ef104abe86",
+    "val_mask_sha256": "4c04ebc905a8a7790b506488f75a9ef405681d7cfb27b740349a987047a1244c",
+    "test_mask_sha256": "e00c8e697ed4828a6ab12d64df73f9d1c639638c482f94bcbef87a5313d985f2"
+  }
+}

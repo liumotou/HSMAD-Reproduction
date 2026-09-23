@@ -1,0 +1,33 @@
+{
+  "protocol_version": "protocol_v2_gadbench_hidden64",
+  "run_type": "formal",
+  "dataset": "yelp",
+  "dataset_file": "datasets/yelp",
+  "result_dir_template": "results/experiments/gat_v2_gadbench/yelp/protocol_v2_gadbench_hidden64/formal/seed_{seed}",
+  "max_epoch": 200,
+  "patience": 50,
+  "h_feats": 64,
+  "num_heads": 4,
+  "per_head_dim": 16,
+  "drop_rate": 0.0,
+  "class_weight": "[1.0, train_normal_count/train_anomaly_count] from frozen train_mask",
+  "expected_anomaly_weight": 5.8816922500935975,
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "edge_access": "graph_edges_required",
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "early_stop_protocol": "validation_AUPRC_GADBench",
+  "checkpoint_protocol": "validation_AUPRC_best_GADBench",
+  "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95",
+  "expected_training_graph_edges": 7739912,
+  "expected_hashes": {
+    "feature_sha256": "ce18381aeaa346f2b4e91a93a60d78a3c080782fb25258d4ac3da1c3f0e8f07c",
+    "label_sha256": "30364745c4ef0162c35de9a17d802d1d91a91550005dd1b56ce772b3bb076a8c",
+    "train_mask_sha256": "6353de34ecf31c75b57823728356523a53655ffbe9f7306df617bc9f4c12e24e",
+    "val_mask_sha256": "ded5db321b6ad6782e12ecffafdcd904c6aba7bd5ad7c3b981b325211840a1ad",
+    "test_mask_sha256": "5babd0b5c258b5ae5634340d725310ac2837702d6679fe2870aa74f1f77501af"
+  },
+  "paper_f1_macro": 0.6736,
+  "paper_auroc": 0.8037
+}

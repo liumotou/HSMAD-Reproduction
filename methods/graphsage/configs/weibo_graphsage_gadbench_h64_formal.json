@@ -1,0 +1,39 @@
+{
+  "method": "GraphSAGE-GADBench-h64",
+  "protocol_version": "graphsage_gadbench_h64_candidate",
+  "protocol_positioning": "HSMAD frozen data protocol + GADBench GraphSAGE training protocol; not author-exact HSMAD or byte-identical GADBench",
+  "reference": {
+    "repository": "https://github.com/squareroot3/GADBench.git",
+    "commit": "f9aa021ce9b6c6580427fb633b596843be76ddc6",
+    "model_file": "models/gnn.py",
+    "model_file_sha256": "6f81e05c4f924e8b8a047e7d052bee7b358b9473dee4b2ddfac3153eba53704d"
+  },
+  "dataset": "weibo",
+  "dataset_file": "datasets/weibo",
+  "result_base_dir": "results/experiments/graphsage/weibo/graphsage_gadbench_h64_candidate/formal",
+  "h_feats": 64,
+  "num_layers": 2,
+  "aggregation": "pool",
+  "activation": "ReLU",
+  "dropout": 0.0,
+  "class_weight": "[1.0, train_normal_count/train_anomaly_count] computed only from frozen train_mask",
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "max_epoch": 200,
+  "patience": 50,
+  "early_stop_protocol": "validation_AUPRC_GADBench_style_patience_gt_50",
+  "checkpoint_protocol": "validation_AUPRC_best",
+  "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95_on_AUPRC_best_checkpoint",
+  "edge_access": "graph_edges_required",
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "expected_training_graph_edges": 762947,
+  "expected_hashes": {
+    "feature_sha256": "ea596cb6982c8cfcbab8a420fecf571dd258e22d4022007a2121a4b948afaa45",
+    "label_sha256": "4ae5a95b9a52b7b065144f91c13036785fb60115748b886d5e266509ac2b3ec8",
+    "train_mask_sha256": "017423ff367b7e4580e4a705e86c056394a6a4abf448af1e037340ef104abe86",
+    "val_mask_sha256": "4c04ebc905a8a7790b506488f75a9ef405681d7cfb27b740349a987047a1244c",
+    "test_mask_sha256": "e00c8e697ed4828a6ab12d64df73f9d1c639638c482f94bcbef87a5313d985f2"
+  },
+  "paper_target": {"f1_macro": 0.8984, "auroc": 0.9320}
+}

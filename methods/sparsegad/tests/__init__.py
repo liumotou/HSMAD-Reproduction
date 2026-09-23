@@ -1,0 +1,1 @@
+"""SparseGAD candidate contract tests."""

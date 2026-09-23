@@ -1,0 +1,23 @@
+{
+  "protocol_version": "protocol_v2_gadbench_hidden10",
+  "run_type": "smoke",
+  "dataset": "tsocial",
+  "dataset_file": "datasets/tsocial",
+  "result_dir": "results/experiments/gat_v2_gadbench/tsocial/protocol_v2_gadbench_hidden10/smoke/seed_0",
+  "seed": 0,
+  "max_epoch": 1,
+  "hidden_dim_total": 10,
+  "hidden_dim_total_source": "HSMAD paper Section 5.1 T-Social exception",
+  "num_heads": 2,
+  "head_dim": 5,
+  "head_configuration_source": "project GAT-v2 structural choice to satisfy total hidden dimension 10; not author-published",
+  "drop_rate": 0.0,
+  "class_weight": "[1.0, train_normal_count/train_anomaly_count] from frozen train_mask",
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "edge_access": "graph_edges_required",
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "sampling": "none",
+  "cpu_fallback": false
+}

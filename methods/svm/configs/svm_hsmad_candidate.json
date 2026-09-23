@@ -1,0 +1,14 @@
+{
+  "method": "SVM",
+  "protocol_status": "candidate_protocol_not_author_exact",
+  "source": "scikit-learn official SVM API",
+  "kernel": "rbf",
+  "C": 1.0,
+  "class_weight": "balanced",
+  "probability": true,
+  "edge_access": "none",
+  "mask_source": "HSMAD frozen train/val/test masks",
+  "threshold_source": "validation F1-Macro over 0.05..0.95",
+  "test_metrics": ["F1-Macro", "AUROC"],
+  "status": "CONFIG_ONLY_NOT_RUN"
+}

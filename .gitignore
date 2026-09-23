@@ -1,0 +1,68 @@
+# Secrets and local credentials
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+**/credentials*
+**/auth.json
+**/*password*
+
+# Python environments and caches
+.venv/
+.venvs/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local datasets, downloads, and transferred staging areas
+datasets/
+downloads/
+remote_work/
+_remote_stage/
+gatv2_restore_staging/
+
+# Model checkpoints and large numerical artifacts
+**/checkpoint*/
+**/checkpoints/
+**/*.pt
+**/*.pth
+**/*.ckpt
+**/*.safetensors
+**/*.npy
+**/*.npz
+
+# Experiment logs and transient runtime files
+*.log
+*.pid
+nohup.out
+tmp/
+temp/
+
+# Local build/intermediate directories
+ppt_build/
+ppt_reproduction_work/
+ppt_revision_work/
+ppt_sensitivity_add/
+xlsx_work/
+*.inspect.ndjson
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+
+# Repository publishing exclusions
+.cache/
+.superpowers/
+.audit_*/
+methods/_source_audit_refs/
+**/node_modules/
+**/wheelhouse/
+tmp_*

@@ -1,0 +1,1 @@
+"""Isolated BWGNN candidate baseline."""
