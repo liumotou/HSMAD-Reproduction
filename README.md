@@ -1,54 +1,49 @@
-# HSMAD reproducibility workspace
+# HSMAD 统一复现工作区
 
-This repository contains the HSMAD implementation and project-adapted baseline runners used to reproduce Table 1 under a shared data, split, and evaluation protocol.
+[中文](README.md) | [English](README_EN.md)
 
-> **Important:** most baseline folders are labelled `candidate_protocol_not_author_exact`. They are auditable project adaptations, not claims of byte-identical author code or exact four-decimal reproduction. Dataset binaries, frozen masks, checkpoints, logs, and experimental result files are intentionally not stored in Git.
+本仓库包含 HSMAD 主方法代码，以及在统一数据、固定划分和统一评价口径下整理的 Table 1 baseline 候选实现与运行脚本。
 
-## Project objective
+> **复现定位**：除非单独注明，`methods/` 下的 baseline 应理解为 `candidate_protocol_not_author_exact`，即“经过项目适配、可审计的候选协议”，不宣称与作者代码逐字节一致，也不承诺复现到论文四位小数。
+>
+> 数据集、冻结 mask、checkpoint、训练日志和正式实验结果体积较大，不上传到 GitHub；仓库提供下载来源、代码、配置和使用说明。
 
-The project compares HSMAD and its Table 1 baselines under the following controls:
+## 1. 研究目标
 
-- the same dataset version and persistent train/validation/test masks;
-- training seeds `0..9`, without regenerating a split per seed;
-- validation-only checkpoint and F1-threshold selection;
-- test data used only after the model and threshold are fixed;
-- test reporting with F1-Macro and AUROC;
-- per-run config, log, checkpoint, metrics, wall time, peak memory, and SHA256 records;
-- ten-seed summaries using the sample standard deviation (`ddof=1`).
+在相同数据版本、相同 train/validation/test 划分和相同最终评价口径下，对 HSMAD 及其 baseline 进行可复算、可审计的实验：
 
-## Repository layout
+- 六个数据集使用持久化的冻结 mask，不随训练 seed 改变；
+- 训练 seed 固定为 `0..9`；
+- 训练集只参与损失计算与参数更新；
+- 验证集负责 early stopping、checkpoint 和 F1 阈值选择；
+- 测试集只在模型与阈值固定后计算最终 F1-Macro 和 AUROC；
+- 每次运行保存 config、日志、history、checkpoint、metrics、耗时、峰值显存和 SHA256；
+- 十次结果采用样本标准差，即 `ddof=1`。
+
+## 2. 仓库结构
 
 ```text
 .
-├── main.py, model.py, dataset.py, manifold_update.py, utils.py  # HSMAD
-├── methods/                                                     # baseline implementations
-│   ├── gcn/
-│   ├── gat/
-│   ├── gat_v2_gadbench/
-│   ├── graphsage/
-│   ├── bwgnn/
-│   ├── sparsegad/
-│   ├── nrgl/
-│   ├── sec_gfd/
-│   ├── ghrn/
-│   ├── svm/
-│   └── ...
-├── docs/DATASETS.md             # official/maintained download links
-├── docs/BASELINE_SCRIPTS.md      # runner and config index
+├── main.py                       # HSMAD 入口
+├── model.py                      # HSMAD 模型
+├── dataset.py                    # 数据加载
+├── manifold_update.py
+├── utils.py
+├── methods/                      # baseline 代码、配置和契约测试
+├── docs/DATASETS.md              # 数据集下载地址与来源说明
+├── docs/BASELINE_SCRIPTS.md      # baseline 入口索引
 ├── scripts/validate_repository.py
-└── datasets/                     # local only; ignored by Git
+└── datasets/                     # 本地数据目录，不提交到 Git
 ```
 
-## Dataset preparation
+## 3. 数据集下载与放置
 
-See [docs/DATASETS.md](docs/DATASETS.md) for the download links and provenance notes.
+完整下载说明见 [docs/DATASETS.md](docs/DATASETS.md)。主要统一来源为：
 
-The main unified source is the official GADBench archive:
+- GADBench：<https://github.com/squareroot3/GADBench>
+- GADBench 数据包：<https://drive.google.com/file/d/1txzXrzwBBAOEATXmfKzMUUKaXh6PJeR1/view?usp=sharing>
 
-- GADBench: https://github.com/squareroot3/GADBench
-- dataset archive: https://drive.google.com/file/d/1txzXrzwBBAOEATXmfKzMUUKaXh6PJeR1/view?usp=sharing
-
-Extract the required files into:
+当前代码约定数据文件放置为：
 
 ```text
 datasets/weibo
@@ -59,94 +54,154 @@ datasets/tfinance
 datasets/tsocial
 ```
 
-These are DGL graph files without filename extensions in the current project convention. A graph is expected to contain `feature`, `label`, `train_mask`, `val_mask`, and `test_mask` in `graph.ndata`.
+这些文件是 DGL graph 文件，通常不带扩展名。每个图应至少包含：
 
-### Special split rules
+```python
+graph.ndata['feature']
+graph.ndata['label']
+graph.ndata['train_mask']
+graph.ndata['val_mask']
+graph.ndata['test_mask']
+```
 
-- **Amazon:** the first 3305 uncovered nodes remain in the complete transductive graph and may participate in message passing, but they are excluded from all three masks, the loss, and reported metrics.
-- **Tolokers:** the project uses the frozen HSMAD masks, not Tolokers' built-in 50/25/25 masks.
-- **Graph methods:** project experiments generally use `to_bidirected -> remove_self_loop -> add_self_loop` where specified by the protocol config.
-- **Feature-only methods:** must not read graph edges.
+### 下载地址存在不等于一定能直接训练
 
-## What happened with Yelp?
+需要区分四个层次：
 
-Yelp has two separate issues that should not be conflated:
+1. **来源确认**：链接来自论文、官方仓库或 benchmark；
+2. **下载完成**：文件完整下载，大小与 SHA256 可核验；
+3. **格式兼容**：文件能被当前 DGL/PyG 版本读取，字段和 shape 正确；
+4. **训练通过**：依赖、CUDA、显存、代码路径和配置均匹配，并完成 smoke/diagnostic/formal。
 
-1. **Data provenance is verified.** The project compared the official GADBench Google Drive candidate with the local Yelp graph. Feature SHA256 and label SHA256 matched. The official candidate had exactly 45,954 additional edges—one self-loop per node—and the local graph is explainable as the official candidate after `remove_self_loop()`.
-2. **Experiment coverage was deliberately frozen.** During later baseline work, Yelp was explicitly excluded from new runs while its protocol and provenance were being reviewed. Therefore, a method without a Yelp result is not evidence that the Yelp file is invalid or that the method cannot theoretically process Yelp.
+因此，新环境下载后应先核对文件和 mask，再运行 smoke，不能仅凭链接可打开就认定完整训练一定成功。
 
-In short: **the local Yelp data source is verified, but not every baseline has a completed/audited Yelp experiment.** Existing Yelp results must be interpreted according to the protocol and status stored with that method, rather than mixed with later candidates.
+### 特殊数据规则
 
-## Why do some baselines cover only one or two datasets?
+- **Amazon**：前 3305 个未覆盖节点保留在完整 transductive 图中参与消息传递，但不得进入 train/validation/test mask、loss 或指标。
+- **Tolokers**：使用项目冻结的 HSMAD mask，不使用图内原始 50/25/25 masks。
+- **图方法**：按对应配置执行图预处理；多数项目候选使用 `to_bidirected -> remove_self_loop -> add_self_loop`。
+- **纯特征方法**：MLP、SVM 等不得读取图边。
 
-The repository records actual completed adaptation work, not a fabricated full matrix. Missing combinations generally fall into one of these categories:
+## 4. Yelp 数据说明
 
-- **Official-source scope:** some author repositories directly support only particular datasets or formats (for example, AMNet officially provides PyG logic for Yelp/Elliptic rather than the complete six-dataset DGL protocol).
-- **Adapter maturity:** a model may exist, while its dataset loader, formal runner, or independent checkpoint-recompute audit is not yet complete for every dataset.
-- **Resource limits:** full-graph methods on T-Finance or T-Social can exceed a 24 GB GPU. The project does not silently sample, shrink the graph, or reduce the model merely to make a run finish.
-- **Protocol freeze:** Yelp was intentionally held back; T-Social was reserved for suitable high-memory hardware.
-- **Known implementation blockers:** CurvGAD reached an architecture/shape incompatibility; AMNet required an isolated legacy CUDA/PyG environment; PMP and some newer methods have only partial components in this snapshot.
-- **Audit requirements:** smoke or a single diagnostic is not promoted to a ten-seed formal result until checkpoint recomputation, mask isolation, and test-leakage checks pass.
+Yelp 的“数据来源”和“实验覆盖”是两个不同问题：
 
-Thus, “only one or two datasets” usually means **the remaining cells are incomplete or blocked under the strict protocol**, not that low-scoring runs were removed.
+1. **来源已经核验**：项目曾将当前 Yelp DGL 图与 GADBench 官方 Google Drive 候选文件逐项对照。feature SHA256 与 label SHA256 一致；官方候选比当前图多 45,954 条边，恰好是每个节点一个 self-loop。当前图可解释为官方候选执行 `remove_self_loop()` 后的版本。
+2. **不是所有 baseline 都完成 Yelp**：后续 baseline 阶段曾冻结 Yelp，不再自动启动新训练。因此缺少某方法的 Yelp 结果，不代表 Yelp 文件错误，也不代表该算法理论上无法处理 Yelp。
 
-## Baseline readiness
+结论：**当前 Yelp 数据来源可标记为已验证的官方 GADBench 预处理版本，但每个 baseline 的 Yelp 完成度仍需单独判断。**
 
-| Method | Code in repository | Standalone runner | Current caution |
-|---|---:|---:|---|
-| HSMAD | Yes | `main.py` | Requires local datasets and DGL/CUDA environment. |
-| GCN | Yes | Yes | Project Kipf-topology candidate; not author-exact HSMAD baseline. |
-| GAT (older candidate) | Yes | Smoke/diagnostic | Archived diagnostic topology, not the current primary GAT candidate. |
-| GAT-v2 | Yes | Yes | GADBench-adapted candidate; T-Social uses the documented hidden-10 exception. |
-| GraphSAGE | Yes | Yes | GADBench-style full-graph pool candidate; determinism audits matter on CUDA. |
-| BWGNN | Yes | Yes | Candidate implementation; dataset coverage encoded in runner contracts. |
-| SparseGAD | Yes | Yes | Candidate protocol, not author-exact. |
-| SVM | Yes | Yes | Feature-only candidate. |
-| SEC-GFD | Yes | Yes | Candidate adapter for selected datasets. |
-| GHRN | Yes | Yes | Candidate adapter; official/protocol differences remain relevant. |
-| CGADM | Yes | Yes | Candidate HSMAD-data adapter. |
-| DSGAD | Yes | Yes | Candidate runner for the datasets declared in its contract. |
-| NRGL | Yes | Python API (`run`) | No command-line `main` in the current snapshot. |
-| CurvGAD | Partial | No formal runner | Precompute/adaptation code retained; known architecture/shape blocker. |
-| AMNet | Partial | No complete runner | Environment and adaptation work retained; this snapshot is not directly trainable. |
-| PMP | Partial | No complete runner | Model/protocol/audit components only in this snapshot. |
+## 5. 为什么有些 baseline 只有一两个数据集？
 
-See [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md) for the detailed entrypoint index.
+本仓库保留真实完成状态，不用空结果拼成完整矩阵。常见原因包括：
 
-## Environment
+- 作者仓库本身只支持少量数据集或特定数据格式；
+- 模型代码已适配，但新数据集 loader、runner 或独立 checkpoint 复算尚未完成；
+- 大图全图训练有显存要求，项目不通过擅自采样、删边或减小模型来规避；
+- 某数据集被协议冻结，暂不启动新实验；
+- 方法存在依赖、ABI、预计算、张量 shape 或确定性问题；
+- 只有 smoke/diagnostic，还没有通过正式十 seed 审计。
 
-There is no single verified environment that runs every historical baseline. The DGL candidates were primarily developed with PyTorch/DGL CUDA environments; AMNet uses an isolated legacy PyTorch/PyG stack. Do not install AMNet's legacy dependencies over the main DGL environment.
+因此，“只完成一两个数据集”通常表示其他组合仍是 `INCOMPLETE` 或 `BLOCKED`，并不表示删除了低分结果。
 
-At minimum, the principal DGL runners require compatible versions of:
+## 6. Baseline 代码状态
 
-- Python 3.10 (recommended for the project snapshots);
-- PyTorch with CUDA support;
-- DGL built for the same CUDA/PyTorch combination;
-- NumPy, SciPy, pandas, scikit-learn and SymPy.
+| 方法 | 代码 | 入口 | 当前说明 |
+|---|---:|---|---|
+| HSMAD | 完整 | `main.py` | 项目主方法 |
+| GCN | 有 | `methods/gcn/src/run_kipf_v2.py` | Kipf 两层候选协议 |
+| GAT v1 | 有 | smoke/diagnostic runner | 旧诊断版本，不作为当前主候选 |
+| GAT-v2 | 有 | `methods/gat_v2_gadbench/src/run_*.py` | GADBench 结构适配候选 |
+| GraphSAGE | 有 | `methods/graphsage/src/run_smoke.py` / `run_formal.py` | GADBench pool 候选 |
+| BWGNN | 有 | `methods/bwgnn/src/run_smoke.py` / `run_formal.py` | 项目适配候选 |
+| SparseGAD | 有 | `methods/sparsegad/src/run_smoke.py` / `run_formal.py` | 项目适配候选 |
+| SVM | 有 | `methods/svm/src/runner.py` | feature-only 候选 |
+| SEC-GFD | 有 | `methods/sec_gfd/src/runner.py` | 部分数据集候选 |
+| GHRN | 有 | `methods/ghrn/src/runner.py` | 项目适配候选 |
+| CGADM | 有 | `methods/cgadm_hsmad/src/runner.py` | HSMAD 数据适配候选 |
+| DSGAD | 有 | `methods/dsgad/src/runner.py` | 项目适配候选 |
+| NRGL | 有 | Python API `run(...)` | 当前快照没有独立 CLI main |
+| CurvGAD | 部分 | 无正式 runner | 保留预计算适配；存在结构/shape 阻塞 |
+| AMNet | 部分 | 无完整 runner | 保留环境与适配材料 |
+| PMP | 部分 | 无完整 runner | 当前仅含 model/protocol/audit 组件 |
 
-Before long training, verify imports and run a five-epoch smoke test for the exact method/dataset pair.
+详细入口见 [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md)。
 
-## Repository validation
+## 7. 环境准备
 
-This check does not require datasets or GPU libraries. It validates published JSON, Python syntax, required entrypoints, and accidental large files:
+不同历史方法并不一定共用同一套依赖。DGL 系列候选通常需要：
+
+- Python 3.10；
+- PyTorch；
+- 与 PyTorch/CUDA 匹配的 DGL；
+- NumPy、SciPy、pandas、scikit-learn、SymPy。
+
+AMNet 使用独立的旧版 PyTorch/PyG 环境，不应直接覆盖主要 DGL 环境。
+
+先确认基础依赖：
+
+```bash
+python - <<'PY'
+import torch, dgl
+print('torch:', torch.__version__)
+print('torch cuda:', torch.version.cuda)
+print('cuda available:', torch.cuda.is_available())
+print('dgl:', dgl.__version__)
+PY
+```
+
+## 8. 代码和数据预检
+
+### 8.1 仓库静态检查
 
 ```bash
 python scripts/validate_repository.py
 ```
 
-Passing this check means the repository snapshot is structurally consistent. It **does not** prove that every training job can run without the correct datasets, CUDA runtime, DGL/PyG build, and GPU memory.
+该脚本检查已发布 Python 语法、JSON 配置、关键入口和异常大文件。通过静态检查只说明仓库结构正常，不等于 GPU 训练已经通过。
 
-## Example commands
-
-Run from the repository root.
-
-### HSMAD
+### 8.2 检查单个 DGL 数据文件
 
 ```bash
-python main.py --dataset weibo --run 10 --epoch 1000 --patience 100 --hid_dim 64 --order 2 --q 0.5
+python - <<'PY'
+import dgl
+
+g = dgl.load_graphs('datasets/weibo')[0][0]
+print('nodes:', g.num_nodes())
+print('edges:', g.num_edges())
+print('feature:', tuple(g.ndata['feature'].shape))
+print('label:', tuple(g.ndata['label'].shape))
+for key in ('train_mask', 'val_mask', 'test_mask'):
+    print(key, int(g.ndata[key].bool().sum()))
+PY
 ```
 
-### GCN candidate, one seed
+正式实验前还应核对 feature、label、mask 和数据文件 SHA256 是否与目标冻结版本一致。
+
+## 9. 如何运行
+
+所有命令默认从仓库根目录执行。部分实验 runner 是从固定实验环境归档的，可能包含固定 `ROOT`；若克隆到不同目录，应先检查：
+
+```bash
+rg -n "ROOT\s*=|/root/autodl-tmp/HSMAD" methods
+```
+
+不要在不了解输出隔离逻辑的情况下直接批量运行。
+
+### 9.1 HSMAD 十 seed
+
+```bash
+python main.py \
+  --dataset weibo \
+  --run 10 \
+  --epoch 1000 \
+  --patience 100 \
+  --hid_dim 64 \
+  --order 2 \
+  --q 0.5
+```
+
+### 9.2 GCN 单 seed
 
 ```bash
 python methods/gcn/src/run_kipf_v2.py \
@@ -154,7 +209,7 @@ python methods/gcn/src/run_kipf_v2.py \
   --seed 0
 ```
 
-### GAT-v2 candidate, one seed
+### 9.3 GAT-v2 单 seed
 
 ```bash
 python methods/gat_v2_gadbench/src/run_formal.py \
@@ -162,7 +217,7 @@ python methods/gat_v2_gadbench/src/run_formal.py \
   --seed 0
 ```
 
-### GraphSAGE candidate, one seed
+### 9.4 GraphSAGE 单 seed
 
 ```bash
 python methods/graphsage/src/run_formal.py \
@@ -170,18 +225,20 @@ python methods/graphsage/src/run_formal.py \
   --seed 0
 ```
 
-### BWGNN candidate, seeds 0–9
+### 9.5 BWGNN 十 seed
+
+BWGNN runner 的 `--seeds` 使用逗号分隔：
 
 ```bash
 python methods/bwgnn/src/run_formal.py \
   --config methods/bwgnn/configs/weibo_bwg_h64_smoke.json \
-  --seeds 0-9 \
+  --seeds 0,1,2,3,4,5,6,7,8,9 \
   --run-type formal
 ```
 
-The BWGNN filename contains `smoke` for historical reasons; inspect the config and runner-generated formal snapshot before using it. Prefer a dataset-specific formal config when one is available.
+配置文件名保留了历史 smoke 命名；formal runner 会用正式 `max_epoch=200`、`patience=50` 覆盖 smoke 控制字段，但仍建议运行前检查生成的 config snapshot。
 
-### SparseGAD candidate, one diagnostic seed
+### 9.6 SparseGAD 单 seed diagnostic
 
 ```bash
 python methods/sparsegad/src/run_formal.py \
@@ -190,45 +247,64 @@ python methods/sparsegad/src/run_formal.py \
   --seeds 0
 ```
 
-### SVM feature-only candidate
+### 9.7 SVM feature-only diagnostic
 
 ```bash
-python methods/svm/src/runner.py --dataset weibo --seed 0 --run-type diagnostic
+python methods/svm/src/runner.py \
+  --dataset weibo \
+  --seed 0 \
+  --run-type diagnostic
 ```
 
-## Safe execution sequence
+### 9.8 SEC-GFD 示例
 
-For any method/dataset pair:
+```bash
+python methods/sec_gfd/src/runner.py \
+  --dataset weibo \
+  --run-type smoke \
+  --seeds 0
+```
 
-1. Run `python scripts/validate_repository.py`.
-2. Verify dataset, feature, label, and mask SHA256 against the intended frozen version.
-3. Run a five-epoch smoke test in a new output directory.
-4. Independently reload the saved checkpoint and reproduce its metrics.
-5. Run a separate seed-0 full diagnostic.
-6. Only after the audit passes, run formal seeds `0..9` serially.
-7. Calculate mean and sample standard deviation (`ddof=1`) from formal/OK records only.
+### 9.9 GHRN 示例
 
-Never reuse smoke/diagnostic checkpoints as formal results, delete a low-scoring seed, or choose a checkpoint/threshold using test metrics.
+```bash
+python methods/ghrn/src/runner.py \
+  --dataset weibo \
+  --run-type smoke \
+  --seeds 0
+```
 
-## Known limitations
+## 10. 推荐运行顺序
 
-- The repository currently publishes code and configs, not the large datasets or historical experiment artifacts.
-- Some configs are protocol snapshots tied to a particular experiment; read them before changing dataset or output paths.
-- Static validation cannot detect CUDA/DGL nondeterminism, insufficient memory, ABI mismatches, or semantic differences from an upstream author implementation.
-- A completed candidate result is suitable for project comparison only when its accompanying audit passes; it must not automatically be called an author-exact reproduction.
-- MLP formal artifacts existed in the experimental workspace, but a complete standalone MLP runner was not present in this local source snapshot and therefore was not invented for this upload.
+每个“方法 × 数据集”组合建议按以下顺序执行：
 
-## Upstream sources
+1. `python scripts/validate_repository.py`；
+2. 检查数据字段、shape、mask 计数和 SHA256；
+3. 运行独立 5 epoch smoke；
+4. 重新加载 checkpoint，独立复算指标并检查 test leakage；
+5. 从头运行 seed=0 diagnostic；
+6. diagnostic 审计通过后，再从头运行 formal seed `0..9`；
+7. 只汇总 `formal/OK` 记录，样本标准差使用 `ddof=1`。
 
-Key upstream references include:
+不得把 smoke 或 diagnostic 混入 formal，不得删除低分 seed，也不得使用 test 指标选 checkpoint、阈值或超参数。
 
-- GADBench: https://github.com/squareroot3/GADBench
-- BWGNN: https://github.com/squareroot3/Rethinking-Anomaly-Detection
-- Original GAT: https://github.com/PetarV-/GAT
-- Original GraphSAGE: https://github.com/williamleif/GraphSAGE
-- AMNet: https://github.com/Illyasville/AMNet
-- SparseGAD: https://github.com/KellyGong/SparseGAD
-- SEC-GFD: https://github.com/Sunxkissed/SEC-GFD
-- NRGL: https://github.com/Shzuwu/NRGL
+## 11. 已知限制
 
-Please cite the original papers and repositories for any method or dataset used.
+- GitHub 中不含数据二进制、冻结 mask、checkpoint、日志和历史结果文件；
+- 一些配置是特定实验的冻结快照，切换数据集前必须核对；
+- 静态检查无法发现 CUDA/DGL 非确定性、显存不足、ABI 不匹配或上游实现语义差异；
+- MLP 正式实验产物曾存在于实验工作区，但本地源码快照中没有完整独立 MLP runner，因此没有凭空补写；
+- 只有通过 checkpoint 复算、mask 隔离和无泄漏审计的候选结果，才适合进入项目比较表。
+
+## 12. 上游来源
+
+- GADBench: <https://github.com/squareroot3/GADBench>
+- BWGNN: <https://github.com/squareroot3/Rethinking-Anomaly-Detection>
+- GAT: <https://github.com/PetarV-/GAT>
+- GraphSAGE: <https://github.com/williamleif/GraphSAGE>
+- AMNet: <https://github.com/Illyasville/AMNet>
+- SparseGAD: <https://github.com/KellyGong/SparseGAD>
+- SEC-GFD: <https://github.com/Sunxkissed/SEC-GFD>
+- NRGL: <https://github.com/Shzuwu/NRGL>
+
+使用数据或方法时，请同时引用相应论文与官方仓库。
