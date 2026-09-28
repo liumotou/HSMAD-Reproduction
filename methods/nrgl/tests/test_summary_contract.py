@@ -3,7 +3,7 @@ import unittest
 
 class NRGLSummaryContractTest(unittest.TestCase):
     def test_summary_uses_only_formal_ok_and_sample_std(self):
-        from audit.summarize_formal import summarize_records
+        from methods.nrgl.audit.summarize_formal import summarize_records
 
         rows = [
             {"run_type": "formal", "status": "OK", "f1_macro": "0.7", "auroc": "0.8"},

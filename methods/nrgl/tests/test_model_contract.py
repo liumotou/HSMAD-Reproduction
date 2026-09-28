@@ -6,7 +6,7 @@ import torch
 
 class NRGLModelContractTest(unittest.TestCase):
     def test_official_core_model_produces_two_class_logits_without_labels_or_masks(self):
-        from src.model import NRGLCore
+        from methods.nrgl.src.model import NRGLCore
 
         graph = dgl.add_self_loop(dgl.graph(([0, 1, 2], [1, 2, 0]), num_nodes=3))
         feature = torch.randn(3, 4)
@@ -17,7 +17,7 @@ class NRGLModelContractTest(unittest.TestCase):
         logits.sum().backward()
 
     def test_saturated_edge_gate_remains_normalizable_with_self_loops(self):
-        from src.model import NRGLCore
+        from methods.nrgl.src.model import NRGLCore
 
         graph = dgl.add_self_loop(dgl.graph(([0, 1], [1, 0]), num_nodes=2))
         feature = torch.ones(2, 3)

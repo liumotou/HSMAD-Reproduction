@@ -3,7 +3,7 @@ import unittest
 
 class NRGLFrozenProtocolContractTest(unittest.TestCase):
     def test_candidate_contract_disables_synthetic_label_noise_and_uses_frozen_masks(self):
-        from src.protocol import candidate_protocol_contract
+        from methods.nrgl.src.protocol import candidate_protocol_contract
 
         contract = candidate_protocol_contract()
         self.assertTrue(contract["frozen_masks_required"])

@@ -15,7 +15,7 @@ class ValidationOnlySelectionContractTest(unittest.TestCase):
         self.test = torch.tensor([False, False, False, False, True, True])
 
     def test_validation_selection_never_reads_test_labels(self):
-        from src.selection import select_validation_checkpoint_metrics
+        from methods.nrgl.src.selection import select_validation_checkpoint_metrics
 
         baseline = select_validation_checkpoint_metrics(
             self.logits, self.labels, self.val, threshold_candidates=[0.05, 0.5, 0.95]
@@ -28,7 +28,7 @@ class ValidationOnlySelectionContractTest(unittest.TestCase):
         self.assertEqual(baseline, after_test_label_change)
 
     def test_test_metrics_never_reads_validation_labels(self):
-        from src.selection import compute_test_metrics
+        from methods.nrgl.src.selection import compute_test_metrics
 
         baseline = compute_test_metrics(self.logits, self.labels, self.test, threshold=0.5)
         altered = self.labels.clone()
@@ -37,7 +37,7 @@ class ValidationOnlySelectionContractTest(unittest.TestCase):
         self.assertEqual(baseline, after_val_label_change)
 
     def test_checkpoint_key_is_validation_auprc(self):
-        from src.selection import should_replace_checkpoint
+        from methods.nrgl.src.selection import should_replace_checkpoint
 
         self.assertTrue(should_replace_checkpoint(candidate_auprc=0.8, best_auprc=0.7))
         self.assertFalse(should_replace_checkpoint(candidate_auprc=0.7, best_auprc=0.8))

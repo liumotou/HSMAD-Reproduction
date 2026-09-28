@@ -3,7 +3,7 @@ import unittest
 
 class NRGLFrozenDataAdapterContractTest(unittest.TestCase):
     def test_weibo_contract_uses_existing_frozen_file_without_split_generation(self):
-        from src.data import frozen_dataset_contract
+        from methods.nrgl.src.data import frozen_dataset_contract
 
         contract = frozen_dataset_contract("weibo")
         self.assertEqual(contract["dataset_file"], "datasets/weibo")

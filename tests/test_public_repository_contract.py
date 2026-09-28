@@ -91,6 +91,14 @@ class PublicRepositoryContractTests(unittest.TestCase):
                 offenders.append(path.relative_to(ROOT).as_posix())
         self.assertEqual([], offenders, f"ambiguous MLP imports: {offenders}")
 
+    def test_nrgl_tests_use_package_qualified_imports(self) -> None:
+        offenders: list[str] = []
+        pattern = re.compile(r"^\s*from (src|audit)\.", re.MULTILINE)
+        for path in (ROOT / "methods" / "nrgl" / "tests").glob("*.py"):
+            if pattern.search(path.read_text(encoding="utf-8", errors="replace")):
+                offenders.append(path.relative_to(ROOT).as_posix())
+        self.assertEqual([], offenders, f"ambiguous NRGL test imports: {offenders}")
+
     def test_mlp_formal_runner_does_not_require_nested_git_metadata(self) -> None:
         path = ROOT / "methods" / "mlp" / "src" / "formal_runner.py"
         text = path.read_text(encoding="utf-8", errors="replace")
