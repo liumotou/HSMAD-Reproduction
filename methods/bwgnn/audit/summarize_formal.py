@@ -1,7 +1,8 @@
 from __future__ import annotations
 import csv, json, statistics
 from pathlib import Path
-ROOT=Path('/root/autodl-tmp/HSMAD')
+from methods.project_paths import project_root
+ROOT=project_root()
 BASE=ROOT/'results/experiments/bwgnn/weibo/bwgnn_gadbench_h64_candidate/formal'
 rows=[]
 for seed in range(10):

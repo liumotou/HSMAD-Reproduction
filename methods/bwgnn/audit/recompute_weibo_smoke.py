@@ -2,11 +2,12 @@
 from __future__ import annotations
 import argparse, hashlib, json
 from pathlib import Path
+from methods.project_paths import project_root
 import dgl, torch
 from methods.bwgnn.src.model import GADBenchBWGNN
 from methods.bwgnn.src.protocol import select_validation_threshold, test_metrics
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 DEFAULT_SEED = ROOT / 'results/experiments/bwgnn/weibo/bwgnn_gadbench_h64_candidate/smoke_retry_01/seed_0'
 
 def digest(path: Path) -> str: return hashlib.sha256(path.read_bytes()).hexdigest()

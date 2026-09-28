@@ -6,6 +6,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from methods.project_paths import project_root
 
 import joblib
 import numpy as np
@@ -65,7 +66,7 @@ def recompute(root: Path, dataset: str, run_dir: Path) -> tuple[dict, dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path("/root/autodl-tmp/HSMAD"))
+    parser.add_argument("--root", type=Path, default=project_root())
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
     args = parser.parse_args()

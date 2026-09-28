@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import py_compile
+import re
 import sys
 import subprocess
 from pathlib import Path
@@ -38,25 +39,9 @@ REQUIRED = [
 EXCLUDED_PARTS = {"audit", "_source_audit_refs", "__pycache__", ".venvs", ".venv"}
 MAX_PUBLISHED_FILE = 10 * 1024 * 1024
 FORBIDDEN_TRACKED_SUFFIXES = {".pt", ".pth", ".ckpt", ".npy", ".npz", ".whl", ".pyc"}
-PRIMARY_ENTRY_POINTS = [
-    "methods/bwgnn/src/run_formal.py",
-    "methods/bwgnn/src/run_smoke.py",
-    "methods/caregnn/src/run.py",
-    "methods/chebnet/src/run.py",
-    "methods/dsgad/src/runner.py",
-    "methods/gin/src/run.py",
-    "methods/graphconsis/src/run.py",
-    "methods/gwnn/src/run.py",
-    "methods/nrgl/src/data.py",
-    "methods/pcgnn/src/run.py",
-    "methods/pmp_hsmad/src/runner.py",
-    "methods/sec_gfd/src/runner.py",
-    "methods/spacegnn_hsmad/src/runner.py",
-    "methods/sparsegad/src/run_formal.py",
-    "methods/sparsegad/src/run_smoke.py",
-]
-
-
+MACHINE_SPECIFIC_PATH = re.compile(
+    r"/root/(?:autodl-tmp|miniconda3)(?:/|\b)|[A-Za-z]:\\"
+)
 def published(path: Path) -> bool:
     return not any(part in EXCLUDED_PARTS for part in path.parts)
 
@@ -69,10 +54,16 @@ def main() -> int:
         if not (ROOT / relative).is_file():
             errors.append(f"missing required file: {relative}")
 
-    for relative in PRIMARY_ENTRY_POINTS:
-        path = ROOT / relative
-        if path.is_file() and "/root/autodl-tmp/HSMAD" in path.read_text(encoding="utf-8", errors="replace"):
-            errors.append(f"server-specific workspace pinned by primary entry point: {relative}")
+    executable_paths = [
+        *sorted((ROOT / "methods").rglob("*.py")),
+        *sorted((ROOT / "methods").rglob("*.sh")),
+    ]
+    for path in executable_paths:
+        relative = path.relative_to(ROOT)
+        if not published(relative):
+            continue
+        if MACHINE_SPECIFIC_PATH.search(path.read_text(encoding="utf-8", errors="replace")):
+            errors.append(f"machine-specific path pinned by executable code: {relative}")
 
     for path in sorted((ROOT / "methods").rglob("*.json")):
         if not published(path.relative_to(ROOT)):

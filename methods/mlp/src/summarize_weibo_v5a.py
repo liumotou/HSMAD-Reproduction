@@ -1,7 +1,8 @@
 import csv,json,os
 from pathlib import Path
+from methods.project_paths import project_root
 import numpy as np
-ROOT=Path('/root/autodl-tmp/HSMAD');R=ROOT/os.environ.get('MLP_V5A_FORMAL_ROOT','results/experiments/mlp/weibo/protocol_v5a_f1_earlystop_auprc_checkpoint/formal');rows=[json.loads((R/f'seed_{s}/metrics.json').read_text()) for s in range(10)]
+ROOT=project_root();R=ROOT/os.environ.get('MLP_V5A_FORMAL_ROOT','results/experiments/mlp/weibo/protocol_v5a_f1_earlystop_auprc_checkpoint/formal');rows=[json.loads((R/f'seed_{s}/metrics.json').read_text()) for s in range(10)]
 if not all(x['status']=='OK' and x['run_type']=='formal' and x['execution_protocol']=='project-unified-v5a' for x in rows):raise SystemExit('requires 10 formal v5a OK')
 fields=[]
 for x in rows:

@@ -7,8 +7,9 @@ import hashlib
 import json
 import statistics
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 PAPER = {
     'weibo': (0.9150, 0.9666),
     'tolokers': (0.6597, 0.7898),

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -uo pipefail
+PROJECT_ROOT="${HSMAD_ROOT:-$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)}"
+PYTHON="${CURVGAD_PYTHON:-${HSMAD_PYTHON:-python}}"
 
-cd /root/autodl-tmp/HSMAD
+cd "$PROJECT_ROOT"
 out="methods/curvgad_hsmad/audit/weibo_exact_precompute_proc128"
 mkdir -p "$out"
 date -Is > "$out/started_at.txt"
@@ -12,7 +14,7 @@ sha256sum \
   > "$out/code_sha256.txt"
 
 set +e
-timeout 7200 .venvs/curvgad_candidate_conda/bin/python \
+timeout 7200 "$PYTHON" \
   -m methods.curvgad_hsmad.src.precompute_dataset \
   --dataset weibo \
   --dataset-path datasets/weibo \

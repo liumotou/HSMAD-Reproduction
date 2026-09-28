@@ -4,10 +4,11 @@ import csv
 import hashlib
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
 import numpy as np
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 BASE = ROOT / "results/experiments/spacegnn_hsmad/weibo/spacegnn_hsmad_candidate/formal"
 PAPER = {"f1_macro": 0.9476, "auroc": 0.9887}
 

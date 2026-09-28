@@ -4,8 +4,9 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 BASE = ROOT / "methods/pcgnn/configs/tolokers_diagnostic.json"
 DEST = ROOT / "methods/pcgnn/configs/formal"
 

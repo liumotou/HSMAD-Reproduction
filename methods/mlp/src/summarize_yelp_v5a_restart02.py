@@ -1,7 +1,8 @@
 import csv,json
 from pathlib import Path
+from methods.project_paths import project_root
 import numpy as np
-R=Path('/root/autodl-tmp/HSMAD/results/experiments/mlp/yelp/protocol_v5a_f1_earlystop_auprc_checkpoint/formal_restart_02')
+R=project_root() / 'results/experiments/mlp/yelp/protocol_v5a_f1_earlystop_auprc_checkpoint/formal_restart_02'
 rows=[json.loads((R/f'seed_{s}/metrics.json').read_text()) for s in range(10)]
 if not all(x['status']=='OK' and x['run_type']=='formal' for x in rows):raise SystemExit('requires 10 formal OK records')
 fields=[]

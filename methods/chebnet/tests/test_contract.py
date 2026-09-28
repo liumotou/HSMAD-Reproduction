@@ -1,7 +1,5 @@
-import site
 import unittest
 
-site.addsitedir('/root/miniconda3/lib/python3.10/site-packages')
 import dgl
 import torch
 

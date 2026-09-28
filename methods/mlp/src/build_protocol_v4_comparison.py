@@ -1,8 +1,9 @@
 """Build a four-cell v1/v2/v3/v4 factor comparison; no training."""
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
-R = Path('/root/autodl-tmp/HSMAD')
+R = project_root()
 P = R / 'results/experiments/mlp/weibo/protocol_v4_class_weight_dropout_zero_probe'
 v1 = json.loads((R / 'results/experiments/mlp/weibo/formal/seed_0/metrics.json').read_text())
 v2 = json.loads((R / 'results/experiments/mlp/weibo/protocol_v2_class_weight_probe/seed_0/metrics.json').read_text())

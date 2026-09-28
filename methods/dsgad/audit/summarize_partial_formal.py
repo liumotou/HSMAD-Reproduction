@@ -2,6 +2,7 @@
 import argparse, csv, hashlib, json, statistics
 from datetime import datetime, timezone
 from pathlib import Path
+from methods.project_paths import project_root
 
 def sha256(path):
     h = hashlib.sha256()
@@ -15,7 +16,7 @@ p.add_argument("--dataset", required=True)
 p.add_argument("--paper-f1", type=float, required=True)
 p.add_argument("--paper-auroc", type=float, required=True)
 a = p.parse_args()
-root = Path("/root/autodl-tmp/HSMAD")
+root = project_root()
 formal = root / f"results/experiments/dsgad/{a.dataset}/dsgad_hsmad_candidate/formal"
 rows = []
 for seed in range(10):

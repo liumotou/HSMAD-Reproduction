@@ -4,14 +4,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import site
 import sys
 from pathlib import Path
+from methods.project_paths import project_root
 
-PROJECT_ROOT = Path('/root/autodl-tmp/HSMAD')
+PROJECT_ROOT = project_root()
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-site.addsitedir('/root/miniconda3/lib/python3.10/site-packages')
 import dgl
 import torch
 

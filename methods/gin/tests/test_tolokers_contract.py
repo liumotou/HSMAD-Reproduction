@@ -1,10 +1,9 @@
 import hashlib
 import json
-import site
 import unittest
 from pathlib import Path
+from methods.project_paths import project_root
 
-site.addsitedir('/root/miniconda3/lib/python3.10/site-packages')
 import dgl
 
 from methods.gin.src.run import prepare_training_graph, sha256_edges, sha256_tensor
@@ -12,7 +11,7 @@ from methods.gin.src.run import prepare_training_graph, sha256_edges, sha256_ten
 
 class GINTolokersContractTest(unittest.TestCase):
     def test_smoke_config_matches_frozen_tolokers_input(self):
-        root = Path('/root/autodl-tmp/HSMAD')
+        root = project_root()
         config_path = root / 'methods/gin/configs/tolokers_gin_h64_smoke.json'
         self.assertTrue(config_path.exists(), 'Tolokers smoke config is not implemented')
         config = json.loads(config_path.read_text(encoding='utf-8'))

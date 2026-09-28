@@ -6,8 +6,9 @@ import hashlib
 import json
 import statistics
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 BASE = ROOT / 'results/experiments/bwgnn/tfinance/bwgnn_gadbench_h64_candidate/formal'
 PAPER = {'f1_macro': 0.9084, 'auroc': 0.9600}
 

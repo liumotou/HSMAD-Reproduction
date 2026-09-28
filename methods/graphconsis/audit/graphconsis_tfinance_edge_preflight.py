@@ -1,8 +1,4 @@
 import json
-import site
-
-site.addsitedir("/root/miniconda3/lib/python3.10/site-packages")
-
 import dgl
 import torch
 

@@ -5,6 +5,7 @@ import argparse
 import json
 import math
 from pathlib import Path
+from methods.project_paths import project_root
 
 
 def compare_scalar(original: object, recomputed: object) -> dict[str, object]:
@@ -23,7 +24,7 @@ def main() -> None:
     parser.add_argument("--audit-name", default="audit_recompute")
     args = parser.parse_args()
     run_dir = args.run_dir.resolve()
-    root = Path("/root/autodl-tmp/HSMAD")
+    root = project_root()
 
     import dgl
     import numpy as np

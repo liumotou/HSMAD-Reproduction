@@ -1,8 +1,9 @@
 """Build the isolated Amazon v3 formal aggregate, optionally admitting verified diagnostic seed 0."""
 import argparse,csv,hashlib,json,os,shutil
 from pathlib import Path
+from methods.project_paths import project_root
 import numpy as np
-ROOT=Path('/root/autodl-tmp/HSMAD');OUT=ROOT/'results/experiments/mlp/amazon/protocol_v3_dropout0/formal';DIAG=ROOT/'results/experiments/mlp/amazon/protocol_v3_dropout0_seed0_diagnostic/seed_0'
+ROOT=project_root();OUT=ROOT/'results/experiments/mlp/amazon/protocol_v3_dropout0/formal';DIAG=ROOT/'results/experiments/mlp/amazon/protocol_v3_dropout0_seed0_diagnostic/seed_0'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('--precheck-only',action='store_true');args=parser.parse_args()

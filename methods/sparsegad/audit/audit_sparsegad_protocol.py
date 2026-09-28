@@ -6,11 +6,12 @@ import hashlib
 import json
 import statistics
 from pathlib import Path
+from methods.project_paths import project_root
 
 import dgl
 import torch
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 OUT = ROOT / 'methods/sparsegad/audit'
 PAPER = {
     'weibo': (0.9305, 0.9420), 'tolokers': (0.5183, 0.7623),

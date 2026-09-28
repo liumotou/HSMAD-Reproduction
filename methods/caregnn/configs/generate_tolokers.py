@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 SOURCE = ROOT / "methods/caregnn/configs/weibo_diagnostic.json"
 TARGET = ROOT / "methods/caregnn/configs"
 PROTOCOL = "caregnn_official_single_flattened_relation_h64_candidate"

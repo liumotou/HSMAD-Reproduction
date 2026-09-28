@@ -32,8 +32,8 @@ The user approved `methods/mlp/configs/weibo_formal.json` for Weibo seeds 0–9:
 ## Smoke command
 
 ```bash
-cd /root/autodl-tmp/HSMAD
-python methods/mlp/src/train.py --dataset weibo --seed 0 --run-type smoke --config methods/mlp/configs/weibo_smoke.json
+cd /path/to/your/HSMAD-checkout
+python -m methods.mlp.src.train --dataset weibo --seed 0 --run-type smoke --config methods/mlp/configs/weibo_smoke.json
 ```
 
 Formal runs are intentionally rejected by this smoke runner until a separately approved configuration is implemented.

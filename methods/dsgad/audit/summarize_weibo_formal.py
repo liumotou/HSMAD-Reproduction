@@ -5,8 +5,9 @@ import json
 import statistics
 from datetime import datetime, timezone
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 FORMAL = ROOT / "results/experiments/dsgad/weibo/dsgad_hsmad_candidate/formal"
 PAPER_F1 = 0.9406
 PAPER_AUROC = 0.9776

@@ -31,35 +31,21 @@ class PublicRepositoryContractTests(unittest.TestCase):
         missing = [relative for relative in required if not (ROOT / relative).is_file()]
         self.assertEqual([], missing, f"missing published entry points: {missing}")
 
-    def test_published_python_does_not_pin_original_server_workspace(self) -> None:
+    def test_published_executable_code_has_no_machine_specific_paths(self) -> None:
         offenders: list[str] = []
-        primary_entry_points = (
-            "methods/bwgnn/src/run_formal.py",
-            "methods/bwgnn/src/run_smoke.py",
-            "methods/caregnn/src/run.py",
-            "methods/chebnet/src/run.py",
-            "methods/dsgad/src/runner.py",
-            "methods/ghrn/src/protocol.py",
-            "methods/gin/src/run.py",
-            "methods/graphconsis/src/run.py",
-            "methods/gwnn/src/run.py",
-            "methods/nrgl/src/data.py",
-            "methods/pcgnn/src/run.py",
-            "methods/pmp_hsmad/src/runner.py",
-            "methods/sec_gfd/src/runner.py",
-            "methods/spacegnn_hsmad/src/runner.py",
-            "methods/sparsegad/src/run_formal.py",
-            "methods/sparsegad/src/run_smoke.py",
+        machine_specific = re.compile(
+            r"/root/(?:autodl-tmp|miniconda3)(?:/|\b)|[A-Za-z]:\\"
         )
-        for relative_text in primary_entry_points:
-            path = ROOT / relative_text
-            if not path.is_file():
-                continue
+        executable_paths = [
+            *ROOT.glob("methods/**/*.py"),
+            *ROOT.glob("methods/**/*.sh"),
+        ]
+        for path in executable_paths:
             relative = path.relative_to(ROOT)
             text = path.read_text(encoding="utf-8", errors="replace")
-            if re.search(r"/root/autodl-tmp/HSMAD", text):
+            if machine_specific.search(text):
                 offenders.append(relative.as_posix())
-        self.assertEqual([], offenders, f"server-specific absolute roots: {offenders}")
+        self.assertEqual([], offenders, f"machine-specific paths in executable code: {offenders}")
 
     def test_no_publishable_large_or_generated_artifacts(self) -> None:
         forbidden_parts = {"__pycache__", ".pytest_cache", ".venv", ".venvs", "cache", "results"}

@@ -5,8 +5,9 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 
 
 def write_new(path: Path, value: object) -> str:

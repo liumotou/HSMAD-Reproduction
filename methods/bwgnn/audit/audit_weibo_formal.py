@@ -1,8 +1,9 @@
 """Read-only audit of retained BWGNN Weibo formal artifacts."""
 import csv, json, statistics
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 FORMAL = ROOT / 'results/experiments/bwgnn/weibo/bwgnn_gadbench_h64_candidate/formal'
 OUT = ROOT / 'methods/bwgnn/audit'
 

@@ -1,7 +1,8 @@
 import csv,json
 from pathlib import Path
+from methods.project_paths import project_root
 import numpy as np
-R=Path('/root/autodl-tmp/HSMAD/results/experiments/mlp/tsocial/protocol_v5a_f1_earlystop_auprc_checkpoint/formal')
+R=project_root() / 'results/experiments/mlp/tsocial/protocol_v5a_f1_earlystop_auprc_checkpoint/formal'
 rows=[json.loads((R/f'seed_{s}/metrics.json').read_text()) for s in range(10)]
 if rows[0]['status']=='OK' and rows[0]['run_type']=='diagnostic':
  rows[0]=dict(rows[0],run_type='formal',formal_seed_0_source='verified_diagnostic')

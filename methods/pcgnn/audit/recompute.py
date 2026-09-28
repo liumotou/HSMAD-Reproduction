@@ -4,15 +4,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import site
 import sys
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-site.addsitedir("/root/miniconda3/lib/python3.10/site-packages")
-
 import dgl
 import torch
 from sklearn.metrics import f1_score, roc_auc_score

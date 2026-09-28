@@ -2,8 +2,9 @@
 from __future__ import annotations
 import argparse, hashlib, json
 from pathlib import Path
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 SOURCE = ROOT / "methods/gin/configs/tolokers_gin_h64_smoke.json"
 
 def write_new(path, value):

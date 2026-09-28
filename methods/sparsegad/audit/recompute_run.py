@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from methods.project_paths import project_root
 
 import dgl
 import torch
@@ -12,7 +13,7 @@ from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 from methods.sparsegad.src.model import SparseGADModel
 from methods.sparsegad.src.run_smoke import select
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 
 
 def recompute_contract() -> dict:

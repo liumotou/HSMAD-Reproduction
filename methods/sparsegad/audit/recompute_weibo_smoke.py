@@ -2,11 +2,12 @@
 from __future__ import annotations
 import hashlib,json
 from pathlib import Path
+from methods.project_paths import project_root
 import dgl,torch
 from methods.sparsegad.src.model import SparseGADModel
 from methods.sparsegad.src.run_smoke import select
 from sklearn.metrics import average_precision_score,f1_score,roc_auc_score
-ROOT=Path('/root/autodl-tmp/HSMAD');SEED=ROOT/'results/experiments/sparsegad/weibo/sparsegad_h64_candidate/smoke/seed_0';OUT=SEED/'audit_recompute'
+ROOT=project_root();SEED=ROOT/'results/experiments/sparsegad/weibo/sparsegad_h64_candidate/smoke/seed_0';OUT=SEED/'audit_recompute'
 def main():
  OUT.mkdir(exist_ok=True);orig=json.loads((SEED/'metrics.json').read_text());state=torch.load(SEED/'checkpoint_last_epoch.pt',map_location='cpu');cfg=state['config'];raw=dgl.load_graphs(str(ROOT/cfg['dataset_file']))[0][0];g=dgl.add_self_loop(dgl.remove_self_loop(dgl.to_bidirected(raw)));x=raw.ndata['feature'].float();y=raw.ndata['label'].long().reshape(-1);m={k:raw.ndata[k].bool() for k in ('train_mask','val_mask','test_mask')};model=SparseGADModel(x.shape[1],64,2,2,.2,.1);model.load_state_dict(state['model_state_dict']);model.eval()
  with torch.no_grad():p=torch.softmax(model(g,x),1)[:,1]
