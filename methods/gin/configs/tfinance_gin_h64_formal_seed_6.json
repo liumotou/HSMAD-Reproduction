@@ -1,0 +1,42 @@
+{
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auprc_best",
+  "class_weight": "none",
+  "dataset": "tfinance",
+  "dataset_file": "datasets/tfinance",
+  "dropout": 0.0,
+  "early_stop_protocol": "validation_auprc",
+  "edge_access": "graph_edges_required",
+  "expected": {
+    "nodes": 39357,
+    "training_edges": 42484443
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "051b27bd8d32086a2f39b629d84a1e900d47e75d5726c7dc2d6a8dd54de4db98",
+    "feature_sha256": "b330e6183b8e7439fb2634b92fe14f9090089d20beed06b09ca48fdee9011c70",
+    "label_sha256": "343637bcc2e93dfcf1dccde170c87bcf0c8abb70957764b4eeb6473b86dab2f2",
+    "train_mask_sha256": "88727debf7b9f9e9dba73095a8706dc175e830012220fb38b2ff39a2e21fe0f1",
+    "val_mask_sha256": "654bddb549a4f0a72950c796b5feccd712656ba89d866484d0c585c932b5c7f2",
+    "test_mask_sha256": "34234f45acfca50e465087b99634b5ef8bb2143f9edb8d7478ed837f2dfe1364",
+    "training_graph_edges_sha256": "ec2d12e833240b59f017ad644741536042f82d5d589d1b467391b1bfd8390a82"
+  },
+  "graph_preprocess": "to_bidirected -> remove_self_loop -> add_self_loop",
+  "hidden_dim": 64,
+  "learning_rate": 0.01,
+  "max_epoch": 200,
+  "method": "GIN",
+  "optimizer": "Adam",
+  "order": 2,
+  "patience": 50,
+  "protocol_version": "gin_h64_candidate",
+  "result_dir": "results/experiments/gin/tfinance/gin_h64_candidate/formal/seed_6",
+  "run_type": "formal",
+  "seed": 6,
+  "sources": {
+    "hidden_dim_optimizer_lr": "HSMAD section 5.1",
+    "operator": "official PyG GINConv",
+    "two_layers_mlp_epsilon_dropout_weight_decay_selection": "project candidate choice; HSMAD not published"
+  },
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "weight_decay": 0.0
+}

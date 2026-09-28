@@ -1,0 +1,11 @@
+{
+  "status": "PREPARATION_ONLY_NOT_EXECUTED",
+  "method": "GCN",
+  "run_type": "smoke",
+  "seed": 0,
+  "dataset": "PENDING_USER_SELECTION",
+  "mask_policy": "read existing frozen train_mask/val_mask/test_mask; do not re-split",
+  "evaluation_policy": "validation threshold selection; test F1-Macro and AUROC",
+  "reference": "GADBench commit f9aa021ce9b6c6580427fb633b596843be76ddc6 models/gnn.py::GCN",
+  "formal_training": "NOT_AUTHORIZED"
+}

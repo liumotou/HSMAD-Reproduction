@@ -1,0 +1,37 @@
+{
+  "batch_size": 1024,
+  "batch_size_source": "project_choice_using_official_yelp_default_because_tolokers_is_unpublished",
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auprc_project_choice",
+  "dataset": "tolokers",
+  "dataset_file": "datasets/tolokers",
+  "expected": {
+    "nodes": 11758,
+    "training_edges": 1049758
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "1d400b4cdced54b25c394cc3d258921f443f04b2ae2e09bbb70fbc7073ed0b65",
+    "feature_sha256": "d70a2b3d04774f11e8d8e94f659b493c7cb86eae0c22bdfbecd2e36fc0577809",
+    "label_sha256": "808c63a620abae774a7614459d9bfe6a258ee3460f2e39ca0511c59dbf553518",
+    "test_mask_sha256": "5fc331d7846b8f113c954295f8c9503209157d8a6393e5520de4ff029a6c1662",
+    "train_mask_sha256": "4f298168b1a4d72eedf0f4594d1deb196ddb6e1c80ee95058dd8c05da1bb10af",
+    "val_mask_sha256": "bf4c7797ce28dc6a47a51c2389ad56f86538c5fa852113de76a17eaaaba9bb36"
+  },
+  "feature_preprocess": "official_row_l2_normalize",
+  "hidden_dim": 64,
+  "lambda_1": 2.0,
+  "learning_rate": 0.01,
+  "max_epoch": 31,
+  "method": "CARE-GNN",
+  "optimizer": "Adam",
+  "patience": 10,
+  "protocol_version": "caregnn_official_single_flattened_relation_h64_candidate",
+  "relation_policy": "single_flattened_relation_project_adaptation",
+  "result_dir": "results/experiments/caregnn/tolokers/caregnn_official_single_flattened_relation_h64_candidate/formal/seed_1",
+  "rl_step_size": 0.02,
+  "run_type": "formal",
+  "seed": 1,
+  "source_commit": "a64ff7523e187a24251f7ca88435d2c9d8f7dcd9",
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "weight_decay": 0.001
+}

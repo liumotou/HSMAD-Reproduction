@@ -1,0 +1,31 @@
+{
+  "method": "CGADM",
+  "protocol": "cgadm_hsmad_candidate",
+  "status_label": "candidate_protocol_not_author_exact",
+  "official_source": {
+    "repository": "https://github.com/weicy15/CGADM",
+    "commit": "53b83107e940b57ea0032421ed2fdbee4c7cbed0"
+  },
+  "dataset": "tfinance",
+  "hidden_dim": 64,
+  "gnn_layers": 3,
+  "dropout": 0.0,
+  "diffusion_steps": 500,
+  "beta_1": 0.0001,
+  "beta_T": 0.02,
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "scheduler_step_size": 150,
+  "scheduler_gamma": 0.5,
+  "max_epoch": 1000,
+  "patience": 200,
+  "checkpoint_metric": "validation_AUPRC",
+  "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95",
+  "test_metrics": ["F1-Macro", "AUROC"],
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "mask_source": "persisted_HSMAD_frozen_masks",
+  "expected_final_nodes": 39357,
+  "expected_final_edges": 42484443,
+  "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+}

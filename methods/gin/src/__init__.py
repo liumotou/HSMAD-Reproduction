@@ -1,0 +1,1 @@
+"""Independent GIN PyG candidate."""

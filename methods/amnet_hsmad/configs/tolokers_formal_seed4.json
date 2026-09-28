@@ -1,0 +1,31 @@
+{
+  "bernstein_order_M": 5,
+  "beta": 1.0,
+  "cache_file": "methods/amnet_hsmad/cache/tolokers_frozen_preprocessed.npz",
+  "cache_sha256": "26414497fa403838c9eacd081d9b7f2309cc3a9a4e9c61e089cea5c5f0757212",
+  "checkpoint_metric": "validation_AUPRC",
+  "dataset": "tolokers",
+  "dropout": 0.3,
+  "filter_lr": 0.01,
+  "filter_num_K": 2,
+  "filter_weight_decay": 0.0,
+  "frozen_mask_required": true,
+  "hidden_channels": 64,
+  "mask_source": "HSMAD_frozen_not_dataset_50_25_25",
+  "max_epoch": 2000,
+  "non_filter_lr": 0.01,
+  "non_filter_weight_decay": 0.0001,
+  "official_commit": "74f6a826ddb56dc73f82aa523bf350a1e28b8f03",
+  "official_repository": "https://github.com/Illyasville/AMNet",
+  "optimizer": "Adam",
+  "patience": 200,
+  "protocol_status": "candidate_protocol_not_author_exact",
+  "result_dir": "results/experiments/amnet_hsmad/tolokers/candidate_official_adapted/formal/seed_4",
+  "run_type": "formal",
+  "seed": 4,
+  "test_metrics": [
+    "F1-Macro",
+    "AUROC"
+  ],
+  "threshold_source": "validation_F1_macro_grid_0.05_to_0.95"
+}

@@ -1,0 +1,31 @@
+{
+  "amazon_uncovered_prefix_nodes": 3305,
+  "bernstein_order_M": 5,
+  "beta": 1.0,
+  "cache_file": "methods/amnet_hsmad/cache/amazon_frozen_preprocessed.npz",
+  "cache_sha256": "421af8df09c5b91cdefef5b995c915d1a384826fb57722cb0381ec336599b569",
+  "checkpoint_metric": "validation_AUPRC",
+  "dataset": "amazon",
+  "dropout": 0.3,
+  "filter_lr": 0.01,
+  "filter_num_K": 2,
+  "filter_weight_decay": 0.0,
+  "frozen_mask_required": true,
+  "hidden_channels": 64,
+  "max_epoch": 2000,
+  "non_filter_lr": 0.01,
+  "non_filter_weight_decay": 0.0001,
+  "official_commit": "74f6a826ddb56dc73f82aa523bf350a1e28b8f03",
+  "official_repository": "https://github.com/Illyasville/AMNet",
+  "optimizer": "Adam",
+  "patience": 200,
+  "protocol_status": "candidate_protocol_not_author_exact",
+  "result_dir": "results/experiments/amnet_hsmad/amazon/candidate_official_adapted/formal/seed_9",
+  "run_type": "formal",
+  "seed": 9,
+  "test_metrics": [
+    "F1-Macro",
+    "AUROC"
+  ],
+  "threshold_source": "validation_F1_macro_grid_0.05_to_0.95"
+}
