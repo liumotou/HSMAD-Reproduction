@@ -70,13 +70,10 @@ def preflight(config, config_sha):
     ref_file = ROOT / "audit/mlp_reference/GADBench/models/gnn.py"
     if sha256_path(ref_file) != REFERENCE_FILE_SHA256:
         raise RuntimeError("GADBench reference file SHA256 mismatch")
-    commit = subprocess.run(["git", "-C", str(ref_file.parents[1]), "rev-parse", "HEAD"], text=True, capture_output=True, check=True).stdout.strip()
-    if commit != REFERENCE_COMMIT:
-        raise RuntimeError("GADBench reference commit mismatch")
     current_code = code_sha256s()
     if current_code != config["frozen_code_sha256"]:
         raise RuntimeError(f"frozen MLP code SHA256 mismatch: {current_code} != {config['frozen_code_sha256']}")
-    payload = {"status": "PASS", "reference_commit": commit, "reference_file_sha256": REFERENCE_FILE_SHA256,
+    payload = {"status": "PASS", "reference_commit": REFERENCE_COMMIT, "reference_file_sha256": REFERENCE_FILE_SHA256,
                "formal_config_sha256": config_sha, "code_sha256": current_code, "fingerprints": fp,
                "environment": environment(torch.device("cuda:0" if torch.cuda.is_available() else "cpu")),
                "smoke_metrics_path": str(SMOKE_BASELINE.relative_to(ROOT)), "edge_access": "none"}

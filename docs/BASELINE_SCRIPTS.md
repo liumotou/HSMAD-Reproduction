@@ -42,6 +42,7 @@ The code below is the project-adapted implementation used for audited HSMAD-data
 ```bash
 export HSMAD_ROOT=/absolute/path/to/verified/workspace  # optional
 
+python -m methods.mlp.src.train --dataset weibo --seed 0 --run-type smoke --config methods/mlp/configs/weibo_smoke.json
 python -m methods.mlp.src.formal_runner --config methods/mlp/configs/weibo_formal.json --seed 0 --preflight-only
 python -m methods.caregnn.src.run --config methods/caregnn/configs/weibo_smoke.json
 python -m methods.chebnet.src.run --config methods/chebnet/configs/weibo_chebnet_h64_smoke.json
@@ -54,4 +55,4 @@ python -m methods.pmp_hsmad.src.runner --dataset weibo --run-type smoke --seeds 
 python -m methods.amnet_hsmad.run_smoke --config methods/amnet_hsmad/configs/weibo_hsmad_candidate.json
 ```
 
-AMNet must use its dedicated environment wrapper when the fixed PyG binary stack is required. The MLP `--preflight-only` command validates configuration and frozen inputs without starting formal training.
+AMNet must use its dedicated environment wrapper when the fixed PyG binary stack is required. Run the MLP smoke command first: it creates the fingerprint baseline consumed by `--preflight-only`. The preflight command then validates configuration, frozen inputs, and the pinned GADBench reference without starting formal training.

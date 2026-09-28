@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 import subprocess
 import unittest
@@ -13,6 +15,7 @@ class PublicRepositoryContractTests(unittest.TestCase):
     def test_recovered_method_entry_points_exist(self) -> None:
         required = (
             "methods/mlp/src/formal_runner.py",
+            "audit/mlp_reference/GADBench/models/gnn.py",
             "methods/gcn/src/kipf_two_layer.py",
             "methods/caregnn/src/run.py",
             "methods/chebnet/src/run.py",
@@ -73,7 +76,10 @@ class PublicRepositoryContractTests(unittest.TestCase):
                 continue
             relative = Path(raw_relative.decode("utf-8"))
             path = ROOT / relative
-            if forbidden_parts.intersection(relative.parts) or path.suffix.lower() in forbidden_suffixes:
+            if not path.exists():
+                continue
+            is_backup = ".before_" in path.name
+            if forbidden_parts.intersection(relative.parts) or path.suffix.lower() in forbidden_suffixes or is_backup:
                 offenders.append(relative.as_posix())
         self.assertEqual([], offenders, f"generated/binary artifacts must not be published: {offenders}")
 
@@ -84,6 +90,20 @@ class PublicRepositoryContractTests(unittest.TestCase):
             if pattern.search(path.read_text(encoding="utf-8", errors="replace")):
                 offenders.append(path.relative_to(ROOT).as_posix())
         self.assertEqual([], offenders, f"ambiguous MLP imports: {offenders}")
+
+    def test_mlp_formal_runner_does_not_require_nested_git_metadata(self) -> None:
+        path = ROOT / "methods" / "mlp" / "src" / "formal_runner.py"
+        text = path.read_text(encoding="utf-8", errors="replace")
+        self.assertNotIn("rev-parse", text)
+        self.assertNotIn("ref_file.parents[1]", text)
+
+    def test_mlp_frozen_code_hashes_match_published_sources(self) -> None:
+        config = json.loads((ROOT / "methods/mlp/configs/weibo_formal.json").read_text(encoding="utf-8"))
+        actual = {
+            relative: hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            for relative in config["frozen_code_sha256"]
+        }
+        self.assertEqual(config["frozen_code_sha256"], actual)
 
 
 if __name__ == "__main__":
