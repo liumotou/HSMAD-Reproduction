@@ -165,7 +165,7 @@ Static validation does not prove CUDA/DGL runtime compatibility or full training
 Run commands from the repository root. Some archived runners contain a fixed project `ROOT`; inspect them before running from a different path:
 
 ```bash
-rg -n "ROOT\s*=|/root/autodl-tmp/HSMAD" methods
+rg -n "ROOT\s*=|autodl-tmp|miniconda3|[A-Za-z]:\\\\" methods
 ```
 
 ### HSMAD, ten seeds
