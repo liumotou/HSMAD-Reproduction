@@ -6,17 +6,17 @@ import csv
 import hashlib
 import json
 import random
-import site
 import sys
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-PROJECT_ROOT = Path('/root/autodl-tmp/HSMAD')
+from methods.project_paths import project_root
+
+PROJECT_ROOT = project_root()
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-site.addsitedir('/root/miniconda3/lib/python3.10/site-packages')
 import dgl
 import numpy as np
 import torch
@@ -26,7 +26,7 @@ from methods.chebnet.src.adapter import dgl_to_pyg_frozen
 from methods.chebnet.src.model import ChebNetCandidate
 from methods.chebnet.src.protocol import select_validation_threshold, test_metrics
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = PROJECT_ROOT
 
 
 @dataclass(frozen=True)

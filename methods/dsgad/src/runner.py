@@ -13,8 +13,9 @@ import torch
 
 from methods.dsgad.src.model import DSGADModel
 from methods.dsgad.src.protocol import class_weight, masked_weighted_loss, prepare_training_graph, setup_seed, test_values, validation_values
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 DATASETS = {
     "weibo": (8405, 400), "tolokers": (11758, 10),
     "amazon": (11944, 25), "tfinance": (39357, 10),

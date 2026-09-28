@@ -7,7 +7,8 @@ from sklearn.metrics import average_precision_score
 from methods.bwgnn.src.model import GADBenchBWGNN
 from methods.bwgnn.src.protocol import masked_cross_entropy, select_validation_threshold, test_metrics
 from methods.bwgnn.src.run_smoke import prepare_training_graph, sha256_file, sha256_tensor
-ROOT=Path('/root/autodl-tmp/HSMAD')
+from methods.project_paths import project_root
+ROOT = project_root()
 def dataset_contract(dataset):
  contracts={'weibo':{'dataset_file':'datasets/weibo','result_dataset':'weibo','expected_nodes':8405},'tolokers':{'dataset_file':'datasets/tolokers','result_dataset':'tolokers','expected_nodes':11758},'amazon':{'dataset_file':'datasets/amazon','result_dataset':'amazon','expected_nodes':11944},'tfinance':{'dataset_file':'datasets/tfinance','result_dataset':'tfinance','expected_nodes':39357}}
  if dataset not in contracts: raise ValueError('unsupported dataset')

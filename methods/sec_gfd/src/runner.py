@@ -20,8 +20,9 @@ import torch
 
 from methods.sec_gfd.src.model import SECGFDModel
 from methods.sec_gfd.src.protocol import final_test_values, masked_loss, validation_selection
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 DATASETS = {"weibo", "amazon", "tolokers", "tfinance"}
 
 

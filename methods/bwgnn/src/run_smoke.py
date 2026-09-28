@@ -17,8 +17,9 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 
 from methods.bwgnn.src.model import GADBenchBWGNN
 from methods.bwgnn.src.protocol import masked_cross_entropy, select_validation_threshold, test_metrics
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 
 
 def smoke_contract() -> dict[str, object]:

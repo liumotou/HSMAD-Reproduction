@@ -18,8 +18,9 @@ from methods.dsgad.src.protocol import prepare_training_graph, setup_seed
 from methods.dsgad.src.runner import load_data
 from methods.pmp_hsmad.src.model import PMPCandidate
 from methods.pmp_hsmad.src.protocol import build_label_unknown, frozen_config, test_metrics, validation_metrics
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 
 
 def candidate_config(dataset: str, run_type: str = "formal") -> dict:

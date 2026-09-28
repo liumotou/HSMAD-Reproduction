@@ -6,8 +6,9 @@ from pathlib import Path
 import dgl, numpy as np, torch
 from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 from methods.sparsegad.src.model import SparseGADModel
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 THRESHOLDS = tuple(round(value / 100, 2) for value in range(5, 100, 5))
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()

@@ -6,17 +6,17 @@ import csv
 import hashlib
 import json
 import random
-import site
 import sys
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+from methods.project_paths import project_root
+
+ROOT = project_root()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-site.addsitedir("/root/miniconda3/lib/python3.10/site-packages")
 
 import dgl
 import numpy as np

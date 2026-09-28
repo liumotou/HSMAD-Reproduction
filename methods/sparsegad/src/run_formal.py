@@ -22,8 +22,9 @@ from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
 from methods.sparsegad.src.model import SparseGADModel
 from methods.sparsegad.src.run_smoke import THRESHOLDS, select
+from methods.project_paths import project_root
 
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 
 
 def formal_contract() -> dict:

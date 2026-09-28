@@ -109,10 +109,17 @@ Yelp 的“数据来源”和“实验覆盖”是两个不同问题：
 | 方法 | 代码 | 入口 | 当前说明 |
 |---|---:|---|---|
 | HSMAD | 完整 | `main.py` | 项目主方法 |
+| MLP | 有 | `methods/mlp/src/formal_runner.py` | feature-only；服务器实验源码已恢复 |
 | GCN | 有 | `methods/gcn/src/run_kipf_v2.py` | Kipf 两层候选协议 |
+| ChebNet | 有 | `methods/chebnet/src/run.py` | PyG 候选协议 |
+| GIN | 有 | `methods/gin/src/run.py` | PyG 候选协议 |
+| GWNN | 有 | `methods/gwnn/src/run.py` | 论文公式候选协议 |
 | GAT v1 | 有 | smoke/diagnostic runner | 旧诊断版本，不作为当前主候选 |
 | GAT-v2 | 有 | `methods/gat_v2_gadbench/src/run_*.py` | GADBench 结构适配候选 |
 | GraphSAGE | 有 | `methods/graphsage/src/run_smoke.py` / `run_formal.py` | GADBench pool 候选 |
+| GraphConsis | 有 | `methods/graphconsis/src/run.py` | 单关系适配候选 |
+| CARE-GNN | 有 | `methods/caregnn/src/run.py` | 单关系适配候选 |
+| PC-GNN | 有 | `methods/pcgnn/src/run.py` | 单关系适配候选 |
 | BWGNN | 有 | `methods/bwgnn/src/run_smoke.py` / `run_formal.py` | 项目适配候选 |
 | SparseGAD | 有 | `methods/sparsegad/src/run_smoke.py` / `run_formal.py` | 项目适配候选 |
 | SVM | 有 | `methods/svm/src/runner.py` | feature-only 候选 |
@@ -122,8 +129,9 @@ Yelp 的“数据来源”和“实验覆盖”是两个不同问题：
 | DSGAD | 有 | `methods/dsgad/src/runner.py` | 项目适配候选 |
 | NRGL | 有 | Python API `run(...)` | 当前快照没有独立 CLI main |
 | CurvGAD | 部分 | 无正式 runner | 保留预计算适配；存在结构/shape 阻塞 |
-| AMNet | 部分 | 无完整 runner | 保留环境与适配材料 |
-| PMP | 部分 | 无完整 runner | 当前仅含 model/protocol/audit 组件 |
+| SpaceGNN | 有 | `methods/spacegnn_hsmad/src/runner.py` | Weibo 已形成候选；其他组合保留阻塞证据 |
+| AMNet | 有但环境隔离 | `methods/amnet_hsmad/run_smoke.py` / `run_full.py` | 固定官方源码与适配 runner 已恢复；需独立 CUDA 11 ABI 环境 |
+| PMP | 有 | `methods/pmp_hsmad/src/runner.py` | HSMAD 冻结协议适配候选 |
 
 详细入口见 [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md)。
 
@@ -137,6 +145,8 @@ Yelp 的“数据来源”和“实验覆盖”是两个不同问题：
 - NumPy、SciPy、pandas、scikit-learn、SymPy。
 
 AMNet 使用独立的旧版 PyTorch/PyG 环境，不应直接覆盖主要 DGL 环境。
+
+服务器上已验证过的环境边界及依赖说明见 [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md)。不要把 DGL 主环境和 AMNet 的旧版 PyG 二进制扩展混装。
 
 先确认基础依赖：
 
@@ -180,13 +190,13 @@ PY
 
 ## 9. 如何运行
 
-所有命令默认从仓库根目录执行。部分实验 runner 是从固定实验环境归档的，可能包含固定 `ROOT`；若克隆到不同目录，应先检查：
+所有命令默认从仓库根目录以模块方式执行。主 runner 默认把当前 checkout 作为项目根目录；数据位于外部已核验工作区时，可局部设置：
 
 ```bash
-rg -n "ROOT\s*=|/root/autodl-tmp/HSMAD" methods
+export HSMAD_ROOT=/absolute/path/to/verified/workspace
 ```
 
-不要在不了解输出隔离逻辑的情况下直接批量运行。
+`HSMAD_ROOT` 目录应同时包含 `datasets/`，并将结果写入该工作区的 `results/`。不要在不了解输出隔离逻辑的情况下直接批量运行。
 
 ### 9.1 HSMAD 十 seed
 
@@ -204,7 +214,7 @@ python main.py \
 ### 9.2 GCN 单 seed
 
 ```bash
-python methods/gcn/src/run_kipf_v2.py \
+python -m methods.gcn.src.run_kipf_v2 \
   --config methods/gcn/configs/protocol_v2_weibo_formal.json \
   --seed 0
 ```
@@ -212,7 +222,7 @@ python methods/gcn/src/run_kipf_v2.py \
 ### 9.3 GAT-v2 单 seed
 
 ```bash
-python methods/gat_v2_gadbench/src/run_formal.py \
+python -m methods.gat_v2_gadbench.src.run_formal \
   --config methods/gat_v2_gadbench/configs/weibo_protocol_v2_gadbench_hidden64_formal.json \
   --seed 0
 ```
@@ -220,7 +230,7 @@ python methods/gat_v2_gadbench/src/run_formal.py \
 ### 9.4 GraphSAGE 单 seed
 
 ```bash
-python methods/graphsage/src/run_formal.py \
+python -m methods.graphsage.src.run_formal \
   --config methods/graphsage/configs/weibo_graphsage_gadbench_h64_formal.json \
   --seed 0
 ```
@@ -230,7 +240,7 @@ python methods/graphsage/src/run_formal.py \
 BWGNN runner 的 `--seeds` 使用逗号分隔：
 
 ```bash
-python methods/bwgnn/src/run_formal.py \
+python -m methods.bwgnn.src.run_formal \
   --config methods/bwgnn/configs/weibo_bwg_h64_smoke.json \
   --seeds 0,1,2,3,4,5,6,7,8,9 \
   --run-type formal
@@ -241,7 +251,7 @@ python methods/bwgnn/src/run_formal.py \
 ### 9.6 SparseGAD 单 seed diagnostic
 
 ```bash
-python methods/sparsegad/src/run_formal.py \
+python -m methods.sparsegad.src.run_formal \
   --config methods/sparsegad/configs/weibo_sparsegad_h64_candidate.json \
   --run-type diagnostic \
   --seeds 0
@@ -250,7 +260,7 @@ python methods/sparsegad/src/run_formal.py \
 ### 9.7 SVM feature-only diagnostic
 
 ```bash
-python methods/svm/src/runner.py \
+python -m methods.svm.src.runner \
   --dataset weibo \
   --seed 0 \
   --run-type diagnostic
@@ -259,7 +269,7 @@ python methods/svm/src/runner.py \
 ### 9.8 SEC-GFD 示例
 
 ```bash
-python methods/sec_gfd/src/runner.py \
+python -m methods.sec_gfd.src.runner \
   --dataset weibo \
   --run-type smoke \
   --seeds 0
@@ -268,7 +278,7 @@ python methods/sec_gfd/src/runner.py \
 ### 9.9 GHRN 示例
 
 ```bash
-python methods/ghrn/src/runner.py \
+python -m methods.ghrn.src.runner \
   --dataset weibo \
   --run-type smoke \
   --seeds 0
@@ -293,7 +303,7 @@ python methods/ghrn/src/runner.py \
 - GitHub 中不含数据二进制、冻结 mask、checkpoint、日志和历史结果文件；
 - 一些配置是特定实验的冻结快照，切换数据集前必须核对；
 - 静态检查无法发现 CUDA/DGL 非确定性、显存不足、ABI 不匹配或上游实现语义差异；
-- MLP 正式实验产物曾存在于实验工作区，但本地源码快照中没有完整独立 MLP runner，因此没有凭空补写；
+- MLP、CAREGNN、ChebNet、GIN、GWNN、GraphConsis、PC-GNN、SpaceGNN、AMNet 和 PMP 的实际服务器源码已恢复；“代码存在”仍不等于每个数据集都已通过 smoke/diagnostic/十 seed 审计；
 - 只有通过 checkpoint 复算、mask 隔离和无泄漏审计的候选结果，才适合进入项目比较表。
 
 ## 12. 上游来源

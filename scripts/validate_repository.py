@@ -20,9 +20,41 @@ REQUIRED = [
     "methods/graphsage/src/run_formal.py",
     "methods/bwgnn/src/run_formal.py",
     "methods/sparsegad/src/run_formal.py",
+    "methods/project_paths.py",
+    "methods/mlp/src/formal_runner.py",
+    "methods/gcn/src/kipf_two_layer.py",
+    "methods/caregnn/src/run.py",
+    "methods/chebnet/src/run.py",
+    "methods/gin/src/run.py",
+    "methods/graphconsis/src/run.py",
+    "methods/gwnn/src/run.py",
+    "methods/pcgnn/src/run.py",
+    "methods/spacegnn_hsmad/src/runner.py",
+    "methods/amnet_hsmad/run_smoke.py",
+    "methods/pmp_hsmad/src/runner.py",
+    "methods/sparsegad/audit/recompute_run.py",
+    "methods/nrgl/audit/recompute_checkpoint.py",
 ]
 EXCLUDED_PARTS = {"audit", "_source_audit_refs", "__pycache__", ".venvs", ".venv"}
 MAX_PUBLISHED_FILE = 10 * 1024 * 1024
+FORBIDDEN_TRACKED_SUFFIXES = {".pt", ".pth", ".ckpt", ".npy", ".npz", ".whl", ".pyc"}
+PRIMARY_ENTRY_POINTS = [
+    "methods/bwgnn/src/run_formal.py",
+    "methods/bwgnn/src/run_smoke.py",
+    "methods/caregnn/src/run.py",
+    "methods/chebnet/src/run.py",
+    "methods/dsgad/src/runner.py",
+    "methods/gin/src/run.py",
+    "methods/graphconsis/src/run.py",
+    "methods/gwnn/src/run.py",
+    "methods/nrgl/src/data.py",
+    "methods/pcgnn/src/run.py",
+    "methods/pmp_hsmad/src/runner.py",
+    "methods/sec_gfd/src/runner.py",
+    "methods/spacegnn_hsmad/src/runner.py",
+    "methods/sparsegad/src/run_formal.py",
+    "methods/sparsegad/src/run_smoke.py",
+]
 
 
 def published(path: Path) -> bool:
@@ -36,6 +68,11 @@ def main() -> int:
     for relative in REQUIRED:
         if not (ROOT / relative).is_file():
             errors.append(f"missing required file: {relative}")
+
+    for relative in PRIMARY_ENTRY_POINTS:
+        path = ROOT / relative
+        if path.is_file() and "/root/autodl-tmp/HSMAD" in path.read_text(encoding="utf-8", errors="replace"):
+            errors.append(f"server-specific workspace pinned by primary entry point: {relative}")
 
     for path in sorted((ROOT / "methods").rglob("*.json")):
         if not published(path.relative_to(ROOT)):
@@ -69,6 +106,8 @@ def main() -> int:
         path = ROOT / relative
         if path.is_file() and path.stat().st_size > MAX_PUBLISHED_FILE:
             errors.append(f"tracked file over 10 MiB: {relative} ({path.stat().st_size} bytes)")
+        if path.suffix.lower() in FORBIDDEN_TRACKED_SUFFIXES:
+            errors.append(f"tracked generated/binary artifact: {relative}")
 
     print(f"checked_python={checked_python}")
     print(f"checked_json={checked_json}")

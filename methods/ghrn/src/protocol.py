@@ -9,9 +9,10 @@ import numpy as np
 import torch
 import torch.nn.functional as functional
 from sklearn.metrics import average_precision_score, confusion_matrix, f1_score, roc_auc_score
+from methods.project_paths import project_root
 
 THRESHOLDS = tuple(round(index * 0.05, 2) for index in range(1, 20))
-ROOT = Path('/root/autodl-tmp/HSMAD')
+ROOT = project_root()
 
 
 def setup_seed(seed: int) -> None:

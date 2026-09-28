@@ -18,8 +18,9 @@ from methods.dsgad.src.protocol import setup_seed
 from methods.dsgad.src.runner import load_data
 from methods.spacegnn.official_snapshot.model import SpaceGNN
 from methods.spacegnn_hsmad.src.protocol import test_values, validation_values
+from methods.project_paths import project_root
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 
 
 def candidate_config(dataset: str, run_type: str = "formal") -> dict:

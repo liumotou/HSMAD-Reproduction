@@ -97,10 +97,17 @@ Missing cells mean `INCOMPLETE` or `BLOCKED`; they do not mean low-scoring seeds
 | Method | Entry point | Note |
 |---|---|---|
 | HSMAD | `main.py` | Main project method |
+| MLP | `methods/mlp/src/formal_runner.py` | Feature-only server experiment source recovered |
 | GCN | `methods/gcn/src/run_kipf_v2.py` | Kipf two-layer candidate |
+| ChebNet | `methods/chebnet/src/run.py` | PyG candidate protocol |
+| GIN | `methods/gin/src/run.py` | PyG candidate protocol |
+| GWNN | `methods/gwnn/src/run.py` | Paper-formula candidate protocol |
 | GAT v1 | smoke/diagnostic runners | Archived diagnostic candidate |
 | GAT-v2 | `methods/gat_v2_gadbench/src/run_*.py` | GADBench-structure adaptation |
 | GraphSAGE | `methods/graphsage/src/run_smoke.py`, `run_formal.py` | GADBench pool candidate |
+| GraphConsis | `methods/graphconsis/src/run.py` | Single-relation adapted candidate |
+| CARE-GNN | `methods/caregnn/src/run.py` | Single-relation adapted candidate |
+| PC-GNN | `methods/pcgnn/src/run.py` | Single-relation adapted candidate |
 | BWGNN | `methods/bwgnn/src/run_smoke.py`, `run_formal.py` | Project-adapted candidate |
 | SparseGAD | `methods/sparsegad/src/run_smoke.py`, `run_formal.py` | Project-adapted candidate |
 | SVM | `methods/svm/src/runner.py` | Feature-only candidate |
@@ -110,14 +117,15 @@ Missing cells mean `INCOMPLETE` or `BLOCKED`; they do not mean low-scoring seeds
 | DSGAD | `methods/dsgad/src/runner.py` | Project-adapted candidate |
 | NRGL | Python API `run(...)` | No standalone CLI main in this snapshot |
 | CurvGAD | partial components | Known architecture/shape blocker |
-| AMNet | partial components | No complete standalone runner in this snapshot |
-| PMP | partial components | Model/protocol/audit components only |
+| SpaceGNN | `methods/spacegnn_hsmad/src/runner.py` | Weibo candidate completed; other combinations retain blocker evidence |
+| AMNet | `methods/amnet_hsmad/run_smoke.py`, `run_full.py` | Isolated CUDA 11 ABI environment required |
+| PMP | `methods/pmp_hsmad/src/runner.py` | Frozen HSMAD protocol candidate |
 
 See [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md) for the detailed index.
 
 ## 7. Environment and validation
 
-Most DGL candidates require Python 3.10, PyTorch, a compatible DGL build, NumPy, SciPy, pandas, scikit-learn, and SymPy. AMNet uses a separate legacy PyTorch/PyG environment and should not overwrite the main DGL environment.
+Most DGL candidates require Python 3.10, PyTorch, a compatible DGL build, NumPy, SciPy, pandas, scikit-learn, and SymPy. AMNet uses a separate legacy PyTorch/PyG environment and should not overwrite the main DGL environment. See [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md) for verified environment boundaries.
 
 Check the repository snapshot:
 
@@ -169,21 +177,21 @@ python main.py --dataset weibo --run 10 --epoch 1000 --patience 100 --hid_dim 64
 ### GCN, one seed
 
 ```bash
-python methods/gcn/src/run_kipf_v2.py \
+python -m methods.gcn.src.run_kipf_v2 \
   --config methods/gcn/configs/protocol_v2_weibo_formal.json --seed 0
 ```
 
 ### GAT-v2, one seed
 
 ```bash
-python methods/gat_v2_gadbench/src/run_formal.py \
+python -m methods.gat_v2_gadbench.src.run_formal \
   --config methods/gat_v2_gadbench/configs/weibo_protocol_v2_gadbench_hidden64_formal.json --seed 0
 ```
 
 ### GraphSAGE, one seed
 
 ```bash
-python methods/graphsage/src/run_formal.py \
+python -m methods.graphsage.src.run_formal \
   --config methods/graphsage/configs/weibo_graphsage_gadbench_h64_formal.json --seed 0
 ```
 
@@ -192,7 +200,7 @@ python methods/graphsage/src/run_formal.py \
 `--seeds` is comma-separated:
 
 ```bash
-python methods/bwgnn/src/run_formal.py \
+python -m methods.bwgnn.src.run_formal \
   --config methods/bwgnn/configs/weibo_bwg_h64_smoke.json \
   --seeds 0,1,2,3,4,5,6,7,8,9 --run-type formal
 ```
@@ -202,7 +210,7 @@ The historical config filename contains `smoke`; the formal runner overrides exe
 ### SparseGAD diagnostic
 
 ```bash
-python methods/sparsegad/src/run_formal.py \
+python -m methods.sparsegad.src.run_formal \
   --config methods/sparsegad/configs/weibo_sparsegad_h64_candidate.json \
   --run-type diagnostic --seeds 0
 ```
@@ -210,19 +218,19 @@ python methods/sparsegad/src/run_formal.py \
 ### SVM diagnostic
 
 ```bash
-python methods/svm/src/runner.py --dataset weibo --seed 0 --run-type diagnostic
+python -m methods.svm.src.runner --dataset weibo --seed 0 --run-type diagnostic
 ```
 
 ### SEC-GFD smoke
 
 ```bash
-python methods/sec_gfd/src/runner.py --dataset weibo --run-type smoke --seeds 0
+python -m methods.sec_gfd.src.runner --dataset weibo --run-type smoke --seeds 0
 ```
 
 ### GHRN smoke
 
 ```bash
-python methods/ghrn/src/runner.py --dataset weibo --run-type smoke --seeds 0
+python -m methods.ghrn.src.runner --dataset weibo --run-type smoke --seeds 0
 ```
 
 ## 9. Recommended execution sequence
@@ -244,7 +252,7 @@ Do not mix smoke/diagnostic artifacts into formal summaries, remove low-scoring 
 - Dataset binaries, frozen masks, checkpoints, logs, and historical results are not published in Git;
 - some configs are frozen experiment snapshots and must be reviewed before reuse;
 - static checks cannot detect CUDA/DGL nondeterminism, OOM, ABI mismatches, or semantic differences from upstream code;
-- MLP artifacts existed in the experiment workspace, but this source snapshot does not contain a complete standalone MLP runner, so none was invented;
+- Actual server sources for MLP, CAREGNN, ChebNet, GIN, GWNN, GraphConsis, PC-GNN, SpaceGNN, AMNet, and PMP are included. Source availability still does not imply that every dataset completed smoke, diagnostic, and audited ten-seed execution;
 - only candidates passing checkpoint recomputation, mask isolation, and leakage audits should enter project comparison tables.
 
 ## 11. Upstream sources

@@ -3,9 +3,10 @@
 from pathlib import Path
 
 import dgl
+from methods.project_paths import project_root
 
 
-ROOT = Path("/root/autodl-tmp/HSMAD")
+ROOT = project_root()
 DATASETS = {
     "weibo": {"dataset_file": "datasets/weibo", "nodes": 8405, "feature_dim": 400},
     "amazon": {"dataset_file": "datasets/amazon", "nodes": 11944, "feature_dim": 25},
