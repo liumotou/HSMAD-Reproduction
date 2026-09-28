@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'methods/mlp/src'))
-from model import FeatureMLP
-from utils import file_sha256,setup_seed,tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256,setup_seed,tensor_sha256
 OUT=ROOT/'results/experiments/mlp/amazon/protocol_v3_dropout0/checkpoint_selection_probe/seed_3'
 MASKS={'train_mask':'fb95bd68eda65b33435b2214bd1ceff41dfa324b5fbed8bcfeb72a1950ca0c4a','val_mask':'2175e7133a0b272f26416cf46b11e08b771d899af50d222724036ed090d9acfb','test_mask':'bc42f2677dbf8357e949a30330b0236fbe6435c91583aa0232a249a20f95e9d1'}
 BASE={'best_epoch':9,'f1_macro':0.9160324971792786,'auroc':0.8959976675148431}

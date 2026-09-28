@@ -5,8 +5,8 @@ import dgl,numpy as np,torch
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix,f1_score,roc_auc_score
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'methods/mlp/src'))
-from model import FeatureMLP
-from utils import file_sha256,setup_seed,tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256,setup_seed,tensor_sha256
 OUT=ROOT/'results/experiments/mlp/amazon/protocol_v1_seed0_diagnostic'
 MASKS={'train_mask':'fb95bd68eda65b33435b2214bd1ceff41dfa324b5fbed8bcfeb72a1950ca0c4a','val_mask':'2175e7133a0b272f26416cf46b11e08b771d899af50d222724036ed090d9acfb','test_mask':'bc42f2677dbf8357e949a30330b0236fbe6435c91583aa0232a249a20f95e9d1'}
 def csha(x):return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()

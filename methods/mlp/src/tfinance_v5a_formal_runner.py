@@ -5,8 +5,8 @@ import dgl,numpy as np,torch
 import torch.nn.functional as F
 from sklearn.metrics import average_precision_score,f1_score,roc_auc_score
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'methods/mlp/src'))
-from model import FeatureMLP
-from utils import file_sha256,setup_seed,tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256,setup_seed,tensor_sha256
 OUT=ROOT/os.environ.get('MLP_TFINANCE_V5A_FORMAL_ROOT','results/experiments/mlp/tfinance/protocol_v5a_f1_earlystop_auprc_checkpoint/formal')
 MASKS=('train_mask','val_mask','test_mask')
 def csha(x):return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()

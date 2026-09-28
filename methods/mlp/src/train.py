@@ -17,8 +17,8 @@ import torch
 import torch.nn.functional as functional
 from sklearn.metrics import f1_score, roc_auc_score
 
-from model import FeatureMLP
-from utils import file_sha256, setup_seed, tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256, setup_seed, tensor_sha256
 
 
 ROOT = Path(__file__).resolve().parents[3]

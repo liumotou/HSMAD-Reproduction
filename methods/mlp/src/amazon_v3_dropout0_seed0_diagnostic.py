@@ -18,8 +18,8 @@ from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "methods/mlp/src"))
-from model import FeatureMLP
-from utils import file_sha256, setup_seed, tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256, setup_seed, tensor_sha256
 
 OUT = ROOT / "results/experiments/mlp/amazon/protocol_v3_dropout0_seed0_diagnostic"
 MASKS = {

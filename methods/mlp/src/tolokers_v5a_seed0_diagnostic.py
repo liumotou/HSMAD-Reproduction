@@ -5,8 +5,8 @@ import dgl,numpy as np,torch
 import torch.nn.functional as F
 from sklearn.metrics import average_precision_score,f1_score,roc_auc_score
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'methods/mlp/src'))
-from model import FeatureMLP
-from utils import file_sha256,setup_seed,tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.utils import file_sha256,setup_seed,tensor_sha256
 OUT=ROOT/'results/experiments/mlp/tolokers/protocol_v5a_f1_earlystop_auprc_checkpoint/diagnostic/seed_0'
 MASKS={'train_mask':'4f298168b1a4d72eedf0f4594d1deb196ddb6e1c80ee95058dd8c05da1bb10af','val_mask':'bf4c7797ce28dc6a47a51c2389ad56f86538c5fa852113de76a17eaaaba9bb36','test_mask':'5fc331d7846b8f113c954295f8c9503209157d8a6393e5520de4ff029a6c1662'}
 def csha(x):return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()

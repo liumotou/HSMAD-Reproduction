@@ -5,9 +5,9 @@ import dgl,numpy as np,torch
 import torch.nn.functional as F
 from sklearn.metrics import confusion_matrix,f1_score,roc_auc_score
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT/'methods/mlp/src'))
-from model import FeatureMLP
-from train import EXPECTED_WEIBO_MASKS,best_validation_threshold,load_feature_data
-from utils import file_sha256,setup_seed,tensor_sha256
+from methods.mlp.src.model import FeatureMLP
+from methods.mlp.src.train import EXPECTED_WEIBO_MASKS,best_validation_threshold,load_feature_data
+from methods.mlp.src.utils import file_sha256,setup_seed,tensor_sha256
 P=ROOT/'results/experiments/mlp/weibo/protocol_v4_class_weight_dropout_zero_probe';V1=ROOT/'results/experiments/mlp/weibo/formal/seed_0';COMMIT='f9aa021ce9b6c6580427fb633b596843be76ddc6';REFSHA='6f81e05c4f924e8b8a047e7d052bee7b358b9473dee4b2ddfac3153eba53704d'
 def csha(x):return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 def hashes():return {f:file_sha256(str(ROOT/f)) for f in ['methods/mlp/src/model.py','methods/mlp/src/utils.py','methods/mlp/src/train.py']}

@@ -77,6 +77,14 @@ class PublicRepositoryContractTests(unittest.TestCase):
                 offenders.append(relative.as_posix())
         self.assertEqual([], offenders, f"generated/binary artifacts must not be published: {offenders}")
 
+    def test_mlp_sources_use_package_qualified_imports(self) -> None:
+        offenders: list[str] = []
+        pattern = re.compile(r"^from (model|train|utils) import ", re.MULTILINE)
+        for path in (ROOT / "methods" / "mlp" / "src").glob("*.py"):
+            if pattern.search(path.read_text(encoding="utf-8", errors="replace")):
+                offenders.append(path.relative_to(ROOT).as_posix())
+        self.assertEqual([], offenders, f"ambiguous MLP imports: {offenders}")
+
 
 if __name__ == "__main__":
     unittest.main()
