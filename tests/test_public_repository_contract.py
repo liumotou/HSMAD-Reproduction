@@ -100,7 +100,9 @@ class PublicRepositoryContractTests(unittest.TestCase):
     def test_mlp_frozen_code_hashes_match_published_sources(self) -> None:
         config = json.loads((ROOT / "methods/mlp/configs/weibo_formal.json").read_text(encoding="utf-8"))
         actual = {
-            relative: hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+            relative: hashlib.sha256(
+                (ROOT / relative).read_bytes().replace(b"\r\n", b"\n")
+            ).hexdigest()
             for relative in config["frozen_code_sha256"]
         }
         self.assertEqual(config["frozen_code_sha256"], actual)

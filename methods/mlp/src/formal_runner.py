@@ -38,9 +38,14 @@ def sha256_path(path: Path):
     return file_sha256(str(path))
 
 
+def normalized_text_sha256(path: Path):
+    """Hash source text consistently across LF and CRLF checkouts."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def code_sha256s():
     paths = [ROOT / "methods/mlp/src/model.py", ROOT / "methods/mlp/src/utils.py", ROOT / "methods/mlp/src/train.py", ROOT / "methods/mlp/src/formal_runner.py"]
-    return {str(path.relative_to(ROOT)): sha256_path(path) for path in paths}
+    return {str(path.relative_to(ROOT)): normalized_text_sha256(path) for path in paths}
 
 
 def environment(device):
@@ -68,7 +73,7 @@ def preflight(config, config_sha):
         if fp[key + "_sha256"] != expected:
             raise RuntimeError(f"frozen mask mismatch for {key}")
     ref_file = ROOT / "audit/mlp_reference/GADBench/models/gnn.py"
-    if sha256_path(ref_file) != REFERENCE_FILE_SHA256:
+    if normalized_text_sha256(ref_file) != REFERENCE_FILE_SHA256:
         raise RuntimeError("GADBench reference file SHA256 mismatch")
     current_code = code_sha256s()
     if current_code != config["frozen_code_sha256"]:

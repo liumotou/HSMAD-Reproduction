@@ -20,10 +20,10 @@
   "training_seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
   "edge_access": "none",
   "frozen_code_sha256": {
-    "methods/mlp/src/model.py": "7c0974b3b55d125b51258d71326b4bc2c3894b20cfcf5e9f27c9ae7559bd29db",
-    "methods/mlp/src/utils.py": "bc0e51cbe07e61cbba826875d13c44dc9f6bb7fa15bbc16cfdfea3415645d9f1",
-    "methods/mlp/src/train.py": "53796f9dd261aa35510322e8c43d3db55a94dea0bbddba06bcd00f3c75022fca",
-    "methods/mlp/src/formal_runner.py": "0fb6d78d5615034f75976f8af582d7f56e712b60ab7bed0fe5e56e9e08940f6b"
+    "methods/mlp/src/model.py": "7933c308bb10a542eba53ca15ecd6483e2f8202269f6f05016bf6867590f9ada",
+    "methods/mlp/src/utils.py": "36404c72245849c1d061710433c7ccb95b5bc8286689b94f5ecbf76f4d286612",
+    "methods/mlp/src/train.py": "debec2858c9132590601c8f78398d9109f030c75bdc97860c7e9cc6ed34faab5",
+    "methods/mlp/src/formal_runner.py": "cbe0a97c9d306456bc556c006e52e076c5a3e3da29bfc38e1876028d4ad8c921"
   },
   "parameter_sources": {
     "optimizer": "HSMAD 论文统一口径",
