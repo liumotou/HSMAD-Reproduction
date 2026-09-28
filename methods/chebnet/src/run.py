@@ -12,6 +12,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    checkout_root = Path(__file__).resolve().parents[3]
+    if str(checkout_root) not in sys.path:
+        sys.path.insert(0, str(checkout_root))
+
 from methods.project_paths import project_root
 
 PROJECT_ROOT = project_root()
