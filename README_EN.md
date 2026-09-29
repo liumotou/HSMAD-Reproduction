@@ -15,13 +15,19 @@ This repository publishes HSMAD, project-adapted implementations of the paper's 
 
 The project compares HSMAD and its baselines with:
 
-- fixed dataset versions and persistent train/validation/test masks;
+- one fixed split per dataset/method comparison, unaffected by training seed;
 - training seeds `0..9` without regenerating splits;
 - train-only loss and parameter updates;
 - validation-only early stopping, checkpoint selection, and F1 threshold selection;
 - test-only final F1-Macro and AUROC after model and threshold are fixed;
 - per-run config, log, history, checkpoint, metrics, time, memory, and SHA256 records;
 - sample standard deviation (`ddof=1`) for ten-seed summaries.
+
+### Split implementation boundary
+
+- The HSMAD entry point currently rebuilds an approximately 40/20/40 split deterministically in `dataset.py` with `random_state=2`, then overwrites graph masks. This is a fixed reproducible split, not direct consumption of persisted masks.
+- Project-adapted baseline runners normally consume `train_mask`, `val_mask`, and `test_mask` from the graph and, where frozen hashes are configured, verify their SHA256 values.
+- Before a formal comparison, verify that the HSMAD-generated split and the target baseline split are identical. Equal seeds alone do not prove equal masks.
 
 ## 2. Layout
 
@@ -54,6 +60,8 @@ datasets/tsocial
 ```
 
 Each graph is expected to expose `feature`, `label`, `train_mask`, `val_mask`, and `test_mask` in `graph.ndata`.
+
+Those masks are the default baseline-runner contract. HSMAD's `dataset.py` rebuilds and overwrites them with the deterministic `random_state=2` split; compare counts and SHA256 before claiming node-for-node split equivalence.
 
 ### A source URL is not proof of a runnable experiment
 
@@ -136,7 +144,7 @@ See [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md) for the detailed index.
 
 ## 7. Environment and validation
 
-Most DGL candidates require Python 3.10, PyTorch, a compatible DGL build, NumPy, SciPy, pandas, scikit-learn, and SymPy. AMNet uses a separate legacy PyTorch/PyG environment and should not overwrite the main DGL environment. See [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md) for verified environment boundaries.
+The repository intentionally has no umbrella root `requirements.txt`: the historical methods require mutually incompatible graph-library stacks. Most DGL candidates require Python 3.10, PyTorch, a compatible DGL build, NumPy, SciPy, pandas, scikit-learn, and SymPy. AMNet uses a separate legacy PyTorch/PyG environment and should not overwrite the main DGL environment. See [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md) for recorded versions, isolated-environment templates, and verification steps.
 
 Check the repository snapshot:
 
@@ -173,11 +181,15 @@ Static validation does not prove CUDA/DGL runtime compatibility or full training
 
 ## 8. Running the code
 
-Run commands from the repository root. Some archived runners contain a fixed project `ROOT`; inspect them before running from a different path:
+Run commands from the repository root. Recommended entry points use repository-relative paths and contain no developer-machine absolute path.
+
+Some newer adapted runners resolve the workspace through `methods.project_paths.project_root()`. For those runners only, datasets and results may be redirected to another verified workspace for one command:
 
 ```bash
-rg -n "ROOT\s*=|autodl-tmp|miniconda3|[A-Za-z]:\\\\" methods
+export HSMAD_ROOT=/absolute/path/to/verified/workspace
 ```
+
+`HSMAD_ROOT` is not a universal feature of every historical runner. HSMAD itself and runners that still derive `ROOT` from `Path(__file__)` expect data under the current checkout's `datasets/`. Check whether an entry point imports `methods.project_paths` before relying on the override.
 
 ### HSMAD, ten seeds
 
@@ -201,7 +213,10 @@ python -m methods.gat_v2_gadbench.src.run_formal \
 
 ### GraphSAGE, one seed
 
+GraphSAGE formal execution requires deterministic process variables:
+
 ```bash
+CUBLAS_WORKSPACE_CONFIG=:4096:8 PYTHONHASHSEED=0 \
 python -m methods.graphsage.src.run_formal \
   --config methods/graphsage/configs/weibo_graphsage_gadbench_h64_formal.json --seed 0
 ```
@@ -266,7 +281,7 @@ Do not mix smoke/diagnostic artifacts into formal summaries, remove low-scoring 
 - Actual server sources for MLP, CAREGNN, ChebNet, GIN, GWNN, GraphConsis, PC-GNN, SpaceGNN, AMNet, and PMP are included. Source availability still does not imply that every dataset completed smoke, diagnostic, and audited ten-seed execution;
 - only candidates passing checkpoint recomputation, mask isolation, and leakage audits should enter project comparison tables.
 
-## 11. Upstream sources
+## 11. Upstream sources and local provenance
 
 - GADBench: <https://github.com/squareroot3/GADBench>
 - BWGNN: <https://github.com/squareroot3/Rethinking-Anomaly-Detection>
@@ -276,5 +291,14 @@ Do not mix smoke/diagnostic artifacts into formal summaries, remove low-scoring 
 - SparseGAD: <https://github.com/KellyGong/SparseGAD>
 - SEC-GFD: <https://github.com/Sunxkissed/SEC-GFD>
 - NRGL: <https://github.com/Shzuwu/NRGL>
+- CGADM: <https://github.com/weicy15/CGADM>
+
+Not every project adaptation maps to an independently verified public official repository. Fixed commits, configuration provenance, and retained source evidence for the remaining methods live under the corresponding `methods/<method>/configs/`, `methods/<method>/audit/`, or `methods/<method>/official_snapshot/` directory. This README does not guess an upstream URL when one has not been verified. ConsisGAD is not present and is not replaced by GraphConsis.
+
+## 12. Release and licensing boundary
+
+- This repository currently has no project-wide `LICENSE` or `CITATION.cff`; absence of a license does not grant unrestricted redistribution rights.
+- Third-party code under `official_snapshot/` remains subject to its upstream license. Check every upstream repository before use or redistribution.
+- Papers, datasets, and baseline implementations must still be cited even when their code is organized in this repository.
 
 Please cite the corresponding papers and official repositories when using any method or dataset.

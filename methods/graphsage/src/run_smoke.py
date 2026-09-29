@@ -16,8 +16,8 @@ import torch
 import torch.nn.functional as F
 from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
-from model import GraphSAGEGADBench, architecture_contract
-from protocol import class_weight_from_train_labels, numpy_bool_mask, numpy_labels, numpy_probabilities, select_validation_f1_threshold
+from methods.graphsage.src.model import GraphSAGEGADBench, architecture_contract
+from methods.graphsage.src.protocol import class_weight_from_train_labels, numpy_bool_mask, numpy_labels, numpy_probabilities, select_validation_f1_threshold
 
 
 ROOT = Path(__file__).resolve().parents[3]

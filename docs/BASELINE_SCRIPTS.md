@@ -48,6 +48,8 @@ These six implementations are useful repository additions but are not among the 
 - Raw data and results are intentionally excluded from Git. Generated outputs belong under `results/experiments/<method>/<dataset>/<protocol>/`.
 - Smoke and diagnostic artifacts must never be mixed into formal ten-seed summaries.
 - Use module invocation from the repository root. If datasets/results live in another verified workspace, set `HSMAD_ROOT` only for that command.
+- `HSMAD_ROOT` applies only to entry points that import `methods.project_paths`; it is not a compatibility switch for every historical runner.
+- GraphSAGE formal execution requires `CUBLAS_WORKSPACE_CONFIG=:4096:8` and `PYTHONHASHSEED=0`. The ten-seed wrapper supplies both values.
 
 ## Exact invocation examples
 
@@ -65,6 +67,15 @@ python -m methods.pcgnn.src.run --config methods/pcgnn/configs/weibo_smoke.json
 python -m methods.spacegnn_hsmad.src.runner --dataset weibo --run-type smoke --seeds 0
 python -m methods.pmp_hsmad.src.runner --dataset weibo --run-type smoke --seeds 0
 python -m methods.amnet_hsmad.run_smoke --config methods/amnet_hsmad/configs/weibo_hsmad_candidate.json
+```
+
+For a single GraphSAGE formal seed, use:
+
+```bash
+CUBLAS_WORKSPACE_CONFIG=:4096:8 PYTHONHASHSEED=0 \
+python -m methods.graphsage.src.run_formal \
+  --config methods/graphsage/configs/weibo_graphsage_gadbench_h64_formal.json \
+  --seed 0
 ```
 
 AMNet must use its dedicated environment wrapper when the fixed PyG binary stack is required. Run the MLP smoke command first: it creates the fingerprint baseline consumed by `--preflight-only`. The preflight command then validates configuration, frozen inputs, and the pinned GADBench reference without starting formal training.

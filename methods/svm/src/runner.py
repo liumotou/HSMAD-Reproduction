@@ -10,7 +10,7 @@ import numpy as np
 import torch
 from dgl.data.utils import load_graphs
 
-from protocol import FeatureSVMProtocol
+from methods.svm.src.protocol import FeatureSVMProtocol
 
 
 def sha256_bytes(data: bytes) -> str:

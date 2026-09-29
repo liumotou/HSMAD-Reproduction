@@ -15,13 +15,19 @@
 
 在相同数据版本、相同 train/validation/test 划分和相同最终评价口径下，对 HSMAD 及其 baseline 进行可复算、可审计的实验：
 
-- 六个数据集使用持久化的冻结 mask，不随训练 seed 改变；
+- 所有对比实验使用同一固定数据划分，训练 seed 不得改变 split；
 - 训练 seed 固定为 `0..9`；
 - 训练集只参与损失计算与参数更新；
 - 验证集负责 early stopping、checkpoint 和 F1 阈值选择；
 - 测试集只在模型与阈值固定后计算最终 F1-Macro 和 AUROC；
 - 每次运行保存 config、日志、history、checkpoint、metrics、耗时、峰值显存和 SHA256；
 - 十次结果采用样本标准差，即 `ddof=1`。
+
+### 固定划分的实现边界
+
+- HSMAD 主入口当前在 `dataset.py` 中以 `random_state=2` 确定性地重建约 40/20/40 的 split，并覆盖图内 mask；这属于“固定可重复划分”，不是直接读取持久化 mask。
+- 项目适配的 baseline runner 通常读取数据文件中的 `train_mask`、`val_mask`、`test_mask`，并在有冻结哈希的配置中核对 mask SHA256。
+- 正式比较前必须确认 HSMAD 重建的 split 与目标 baseline 冻结 split 一致；不得仅凭 seed 相同推定 mask 相同。
 
 ## 2. 仓库结构
 
@@ -66,6 +72,8 @@ graph.ndata['train_mask']
 graph.ndata['val_mask']
 graph.ndata['test_mask']
 ```
+
+上述 mask 是 baseline runner 的默认输入契约。HSMAD 的 `dataset.py` 会按固定 `random_state=2` 重建并覆盖 mask；如果目标是与 baseline 使用逐节点完全相同的 split，必须在训练前比较计数与 SHA256。
 
 ### 下载地址存在不等于一定能直接训练
 
@@ -148,7 +156,7 @@ HSMAD 主方法入口为 `main.py`，不计入下面的 17 个 baseline。论文
 
 ## 7. 环境准备
 
-不同历史方法并不一定共用同一套依赖。DGL 系列候选通常需要：
+不同历史方法并不一定共用同一套依赖，因此仓库有意不提供一个会把所有方法混装到一起的根目录 `requirements.txt`。DGL 系列候选通常需要：
 
 - Python 3.10；
 - PyTorch；
@@ -157,7 +165,7 @@ HSMAD 主方法入口为 `main.py`，不计入下面的 17 个 baseline。论文
 
 AMNet 使用独立的旧版 PyTorch/PyG 环境，不应直接覆盖主要 DGL 环境。
 
-服务器上已验证过的环境边界及依赖说明见 [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md)。不要把 DGL 主环境和 AMNet 的旧版 PyG 二进制扩展混装。
+服务器上已验证过的版本、隔离环境创建模板和安装核对步骤见 [docs/ENVIRONMENTS.md](docs/ENVIRONMENTS.md)。不要把 DGL 主环境、标准 PyG 环境和 AMNet 的旧版 PyG 二进制扩展混装。
 
 先确认基础依赖：
 
@@ -201,13 +209,15 @@ PY
 
 ## 9. 如何运行
 
-所有命令默认从仓库根目录以模块方式执行。主 runner 默认把当前 checkout 作为项目根目录；数据位于外部已核验工作区时，可局部设置：
+所有命令默认从仓库根目录执行。推荐入口均使用仓库相对路径，不包含开发机器的绝对路径。
+
+部分较新的适配 runner 通过 `methods.project_paths.project_root()` 解析根目录；这些 runner 的数据与结果位于外部已核验工作区时，可对单条命令局部设置：
 
 ```bash
 export HSMAD_ROOT=/absolute/path/to/verified/workspace
 ```
 
-`HSMAD_ROOT` 目录应同时包含 `datasets/`，并将结果写入该工作区的 `results/`。不要在不了解输出隔离逻辑的情况下直接批量运行。
+`HSMAD_ROOT` 目录应同时包含 `datasets/`，并将结果写入该工作区的 `results/`。该变量并非所有历史 runner 的通用功能：HSMAD 主入口及仍以 `Path(__file__)` 定位根目录的 runner 应把数据放在当前 checkout 的 `datasets/`。运行前可在入口源码中检查是否导入 `methods.project_paths`。
 
 ### 9.1 HSMAD 十 seed
 
@@ -240,7 +250,10 @@ python -m methods.gat_v2_gadbench.src.run_formal \
 
 ### 9.4 GraphSAGE 单 seed
 
+GraphSAGE formal 强制要求确定性环境变量：
+
 ```bash
+CUBLAS_WORKSPACE_CONFIG=:4096:8 PYTHONHASHSEED=0 \
 python -m methods.graphsage.src.run_formal \
   --config methods/graphsage/configs/weibo_graphsage_gadbench_h64_formal.json \
   --seed 0
@@ -317,7 +330,7 @@ python -m methods.ghrn.src.runner \
 - MLP、CAREGNN、ChebNet、GIN、GWNN、GraphConsis、PC-GNN、SpaceGNN、AMNet 和 PMP 的实际服务器源码已恢复；“代码存在”仍不等于每个数据集都已通过 smoke/diagnostic/十 seed 审计；
 - 只有通过 checkpoint 复算、mask 隔离和无泄漏审计的候选结果，才适合进入项目比较表。
 
-## 12. 上游来源
+## 12. 上游来源与本地 provenance
 
 - GADBench: <https://github.com/squareroot3/GADBench>
 - BWGNN: <https://github.com/squareroot3/Rethinking-Anomaly-Detection>
@@ -327,5 +340,14 @@ python -m methods.ghrn.src.runner \
 - SparseGAD: <https://github.com/KellyGong/SparseGAD>
 - SEC-GFD: <https://github.com/Sunxkissed/SEC-GFD>
 - NRGL: <https://github.com/Shzuwu/NRGL>
+- CGADM: <https://github.com/weicy15/CGADM>
+
+并非每个项目适配都能对应一个已独立核验的公开官方仓库。其余方法的固定 commit、配置来源或官方快照证据保存在对应的 `methods/<method>/configs/`、`methods/<method>/audit/` 或 `methods/<method>/official_snapshot/` 中；缺少已核验 URL 时不在此猜测链接。ConsisGAD 当前没有代码，也没有以 GraphConsis 替代。
+
+## 13. 发布与许可证边界
+
+- 本仓库当前没有项目级 `LICENSE` 或 `CITATION.cff`；这不等于授予任意再分发权利。
+- `official_snapshot/` 中的第三方代码仍受其上游许可证约束，使用或再发布前应逐项核对原仓库许可。
+- 论文、数据集和各 baseline 的引用责任不会因代码被整理到本仓库而消失。
 
 使用数据或方法时，请同时引用相应论文与官方仓库。

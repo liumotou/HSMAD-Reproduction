@@ -13,14 +13,14 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from contracts import formal_execution_contract
-from model import GADBenchGATV2, architecture_contract
-from run_diagnostic_full import checkpoint_test
-from run_smoke import (
+from methods.gat_v2_gadbench.src.contracts import formal_execution_contract
+from methods.gat_v2_gadbench.src.model import GADBenchGATV2, architecture_contract
+from methods.gat_v2_gadbench.src.run_diagnostic_full import checkpoint_test
+from methods.gat_v2_gadbench.src.run_smoke import (
     ROOT, best_threshold, file_sha256, framework, graph_sha256, protected_manifest,
     set_seed, split_metrics, tensor_sha256, write_json,
 )
-from selection import update_selection
+from methods.gat_v2_gadbench.src.selection import update_selection
 
 
 PAPER_F1, PAPER_AUROC = 0.9408, 0.9614

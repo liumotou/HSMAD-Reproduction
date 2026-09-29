@@ -113,6 +113,33 @@ class PublicRepositoryContractTests(unittest.TestCase):
                 offenders.append(path.relative_to(ROOT).as_posix())
         self.assertEqual([], offenders, f"ambiguous NRGL test imports: {offenders}")
 
+    def test_documented_module_entry_points_use_package_qualified_local_imports(self) -> None:
+        entry_points = (
+            "methods/gcn/src/run_kipf_v2.py",
+            "methods/gat_v2_gadbench/src/run_formal.py",
+            "methods/gat_v2_gadbench/src/run_diagnostic_full.py",
+            "methods/gat_v2_gadbench/src/run_smoke.py",
+            "methods/gat_v2_gadbench/src/model.py",
+            "methods/graphsage/src/run_formal.py",
+            "methods/graphsage/src/run_smoke.py",
+            "methods/svm/src/runner.py",
+        )
+        ambiguous = re.compile(
+            r"^\s*from (?:contracts|kipf_two_layer|model|protocol|run_diagnostic_full|run_smoke|selection|utils) import ",
+            re.MULTILINE,
+        )
+        offenders = [
+            relative
+            for relative in entry_points
+            if ambiguous.search((ROOT / relative).read_text(encoding="utf-8", errors="replace"))
+        ]
+        self.assertEqual([], offenders, f"ambiguous imports break documented python -m entry points: {offenders}")
+
+    def test_graphsage_formal_wrapper_supplies_required_determinism_environment(self) -> None:
+        wrapper = (ROOT / "methods/graphsage/run_weibo_formal.sh").read_text(encoding="utf-8")
+        self.assertIn("CUBLAS_WORKSPACE_CONFIG=:4096:8", wrapper)
+        self.assertIn("PYTHONHASHSEED=0", wrapper)
+
     def test_mlp_formal_runner_does_not_require_nested_git_metadata(self) -> None:
         path = ROOT / "methods" / "mlp" / "src" / "formal_runner.py"
         text = path.read_text(encoding="utf-8", errors="replace")

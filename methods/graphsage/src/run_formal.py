@@ -14,10 +14,10 @@ import torch
 import torch.nn.functional as F
 from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
-from model import GraphSAGEGADBench, architecture_contract
-from protocol import class_weight_from_train_labels, numpy_bool_mask, numpy_labels, numpy_probabilities, select_validation_f1_threshold
-from run_smoke import file_sha256, framework_info, graph_sha256, protected_manifest, setup_seed, tensor_sha256, write_json
-from selection import update_auprc_selection
+from methods.graphsage.src.model import GraphSAGEGADBench, architecture_contract
+from methods.graphsage.src.protocol import class_weight_from_train_labels, numpy_bool_mask, numpy_labels, numpy_probabilities, select_validation_f1_threshold
+from methods.graphsage.src.run_smoke import file_sha256, framework_info, graph_sha256, protected_manifest, setup_seed, tensor_sha256, write_json
+from methods.graphsage.src.selection import update_auprc_selection
 
 
 ROOT = Path(__file__).resolve().parents[3]

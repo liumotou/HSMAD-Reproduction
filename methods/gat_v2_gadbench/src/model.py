@@ -2,7 +2,7 @@
 
 from torch import nn
 
-from contracts import architecture_contract
+from methods.gat_v2_gadbench.src.contracts import architecture_contract
 
 
 class FeedForwardModule(nn.Module):

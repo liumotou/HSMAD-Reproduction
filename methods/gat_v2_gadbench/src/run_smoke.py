@@ -16,7 +16,7 @@ import torch
 import torch.nn.functional as F
 from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
-from model import GADBenchGATV2, architecture_contract
+from methods.gat_v2_gadbench.src.model import GADBenchGATV2, architecture_contract
 
 
 ROOT = Path(__file__).resolve().parents[3]

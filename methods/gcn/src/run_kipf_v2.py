@@ -2,7 +2,6 @@ import argparse
 import csv
 import hashlib
 import json
-import sys
 import time
 import traceback
 from pathlib import Path
@@ -87,9 +86,8 @@ def main():
     import torch.nn.functional as F
     from sklearn.metrics import average_precision_score, f1_score, roc_auc_score
 
-    sys.path.insert(0, str(ROOT / "methods/mlp/src"))
-    from utils import file_sha256, setup_seed, tensor_sha256
-    from kipf_two_layer import KipfTwoLayerGCN
+    from methods.mlp.src.utils import file_sha256, setup_seed, tensor_sha256
+    from methods.gcn.src.kipf_two_layer import KipfTwoLayerGCN
 
     result = {
         "method": "GCN",

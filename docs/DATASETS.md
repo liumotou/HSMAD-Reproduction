@@ -10,7 +10,7 @@ GADBench provides a unified archive covering the benchmark datasets used here:
 - Fixed reference commit used by this project: `f9aa021ce9b6c6580427fb633b596843be76ddc6`
 - Official Google Drive archive (`datasets.zip`): https://drive.google.com/file/d/1txzXrzwBBAOEATXmfKzMUUKaXh6PJeR1/view?usp=sharing
 
-After downloading, extract the archive into `datasets/`. The frozen train/validation/test masks used in this project are experiment artifacts and must not be regenerated silently.
+After downloading, extract the archive into `datasets/`. Project-adapted baseline runners consume the graph's frozen train/validation/test masks and must not regenerate them silently. The HSMAD root loader is a documented exception: it deterministically rebuilds an approximately 40/20/40 split with `random_state=2` and overwrites graph masks. Verify counts and SHA256 before claiming that this reconstructed split is identical to a baseline's persisted split.
 
 ## Per-dataset sources
 
@@ -27,7 +27,7 @@ After downloading, extract the archive into `datasets/`. The frozen train/valida
 
 1. Do not commit raw datasets, extracted graphs, masks, or cached downloads.
 2. Record SHA256 for feature, label, graph, and all three masks before training.
-3. Keep the frozen split fixed across seeds `0..9`.
+3. Keep the split fixed across seeds `0..9`; distinguish persisted graph masks from HSMAD's deterministic `random_state=2` reconstruction.
 4. Graph methods use the documented graph preprocessing pipeline; feature-only methods must not read edges.
 5. Dataset formats from different sources are not assumed interchangeable solely because node/edge counts match.
 

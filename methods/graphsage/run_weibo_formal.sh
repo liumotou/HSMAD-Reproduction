@@ -10,7 +10,8 @@ BASE="$ROOT/results/experiments/graphsage/weibo/graphsage_gadbench_h64_candidate
 
 for seed in 0 1 2 3 4 5 6 7 8 9; do
   temporary_log="$BASE/terminal_seed_${seed}.tmp.log"
-  "$PYTHON" -m methods.graphsage.src.run_formal --config "$CONFIG" --seed "$seed" > "$temporary_log" 2>&1
+  CUBLAS_WORKSPACE_CONFIG=:4096:8 PYTHONHASHSEED=0 \
+    "$PYTHON" -m methods.graphsage.src.run_formal --config "$CONFIG" --seed "$seed" > "$temporary_log" 2>&1
   exit_code=$?
   if [[ -d "$BASE/seed_${seed}" ]]; then
     mv -- "$temporary_log" "$BASE/seed_${seed}/terminal.log"
