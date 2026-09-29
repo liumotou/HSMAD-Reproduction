@@ -2,32 +2,44 @@
 
 The code below is the project-adapted implementation used for audited HSMAD-data experiments. Unless explicitly stated otherwise, these runs are marked `candidate_protocol_not_author_exact`; they are not claimed to be byte-identical author reproductions.
 
+## HSMAD
+
+The main project method uses `main.py`, `model.py`, `manifold_update.py`, `dataset.py`, and `utils.py`. It is not part of the 17-baseline count.
+
+## Table 1 baselines (17)
+
 | Method | Main implementation / runner | Configuration location | Status note |
 |---|---|---|---|
-| HSMAD | `main.py`, `model.py`, `manifold_update.py`, `dataset.py`, `utils.py` | command-line arguments in `main.py` | Project root implementation. |
-| MLP | `methods/mlp/src/formal_runner.py` | `methods/mlp/configs/` | Feature-only candidate recovered from the experiment workspace. |
+| MLP | `methods/mlp/src/formal_runner.py` | `methods/mlp/configs/` | Feature-only project candidate. |
 | GCN | `methods/gcn/src/run_kipf_v2.py` | `methods/gcn/configs/` | Kipf two-layer project candidate. |
-| ChebNet | `methods/chebnet/src/run.py` | `methods/chebnet/configs/` | PyG candidate. |
-| GIN | `methods/gin/src/run.py` | `methods/gin/configs/` | PyG candidate. |
-| GWNN | `methods/gwnn/src/run.py` | `methods/gwnn/configs/` | Paper-formula candidate. |
-| GAT (original topology diagnostic) | `methods/gat/src/run_smoke.py`, `run_diagnostic_full.py` | `methods/gat/configs/` | Diagnostic/archived candidate. |
-| GAT-v2 (GADBench-adapted) | `methods/gat_v2_gadbench/src/run_*.py` | `methods/gat_v2_gadbench/configs/` | Residual GAT + FFN project candidate. |
-| GraphSAGE | `methods/graphsage/src/run_smoke.py`, `run_formal.py` | `methods/graphsage/configs/` | GADBench pool GraphSAGE project candidate. |
-| GraphConsis | `methods/graphconsis/src/run.py` | `methods/graphconsis/configs/` | Single-relation adapted candidate. |
-| CARE-GNN | `methods/caregnn/src/run.py` | `methods/caregnn/configs/` | Single-relation adapted candidate. |
+| GAT | `methods/gat_v2_gadbench/src/run_formal.py` | `methods/gat_v2_gadbench/configs/` | Primary candidate; `methods/gat/` is an earlier diagnostic implementation of the same baseline. |
+| GraphSAGE | `methods/graphsage/src/run_formal.py` | `methods/graphsage/configs/` | GADBench pool GraphSAGE project candidate. |
+| AMNet | `methods/amnet_hsmad/run_full.py` | `methods/amnet_hsmad/configs/` | Requires the isolated legacy CUDA 11/PyG environment. |
+| BWGNN | `methods/bwgnn/src/run_formal.py` | `methods/bwgnn/configs/` | Project-adapted candidate. |
+| GHRN | `methods/ghrn/src/runner.py` | method source directory | Project-adapted candidate. |
+| SparseGAD | `methods/sparsegad/src/run_formal.py` | `methods/sparsegad/configs/` | Project-adapted candidate. |
+| SEC-GFD | `methods/sec_gfd/src/runner.py` | method source directory | Selected-dataset candidate. |
+| NRGL | `run(...)` in `methods/nrgl/src/runner.py` | `methods/nrgl/configs/` | Code/API is present, but this snapshot has no standalone CLI main. |
 | PC-GNN | `methods/pcgnn/src/run.py` | `methods/pcgnn/configs/` | Single-relation adapted candidate. |
-| BWGNN | `methods/bwgnn/src/run_smoke.py`, `run_formal.py` | `methods/bwgnn/configs/` | Project-adapted BWGNN runner. |
-| SparseGAD | `methods/sparsegad/src/run_smoke.py`, `run_formal.py` | `methods/sparsegad/configs/` | Candidate protocol. |
-| NRGL | `methods/nrgl/src/runner.py` | `methods/nrgl/configs/` | Candidate protocol. |
-| SEC-GFD | `methods/sec_gfd/src/runner.py` | method source directory | Candidate protocol. |
-| GHRN | `methods/ghrn/src/runner.py` | method source directory | Candidate protocol. |
-| SVM | `methods/svm/src/runner.py` | `methods/svm/configs/` | Feature-only candidate. |
-| CGADM | `methods/cgadm_hsmad/src/runner.py` | `methods/cgadm_hsmad/configs/` | HSMAD-data adapter candidate. |
-| DSGAD | `methods/dsgad/src/runner.py` | method source directory | Candidate components/runner. |
-| CurvGAD | `methods/curvgad_hsmad/src/` | method source directory | Precomputation/adaptation code; formal execution remained blocked by architecture/shape issues. |
-| SpaceGNN | `methods/spacegnn_hsmad/src/runner.py` | generated candidate configuration | Adapted runner plus fixed official snapshot. |
-| AMNet | `methods/amnet_hsmad/run_smoke.py`, `run_full.py` | `methods/amnet_hsmad/configs/` | Requires the isolated legacy CUDA 11/PyG environment. |
+| ConsisGAD | Not included | — | No ConsisGAD implementation is currently present; GraphConsis is not a substitute. |
 | PMP | `methods/pmp_hsmad/src/runner.py` | generated candidate configuration | Adapted frozen-mask candidate. |
+| DSGAD | `methods/dsgad/src/runner.py` | method source directory | Project-adapted candidate. |
+| CurvGAD | `methods/curvgad_hsmad/src/` | method source directory | Partial precomputation/adaptation code; no executable formal runner. |
+| SpaceGNN | `methods/spacegnn_hsmad/src/runner.py` | generated candidate configuration | Project-adapted candidate. |
+| CGADM | `methods/cgadm_hsmad/src/runner.py` | `methods/cgadm_hsmad/configs/` | HSMAD-data adapter candidate. |
+
+## Supplementary methods
+
+These six implementations are useful repository additions but are not among the 17 baselines in the paper's Table 1.
+
+| Method | Main implementation / runner | Configuration location | Status note |
+|---|---|---|---|
+| ChebNet | `methods/chebnet/src/run.py` | `methods/chebnet/configs/` | Supplementary PyG candidate. |
+| GIN | `methods/gin/src/run.py` | `methods/gin/configs/` | Supplementary PyG candidate. |
+| GWNN | `methods/gwnn/src/run.py` | `methods/gwnn/configs/` | Supplementary paper-formula candidate. |
+| SVM | `methods/svm/src/runner.py` | `methods/svm/configs/` | Supplementary feature-only candidate. |
+| CARE-GNN | `methods/caregnn/src/run.py` | `methods/caregnn/configs/` | Supplementary single-relation candidate. |
+| GraphConsis | `methods/graphconsis/src/run.py` | `methods/graphconsis/configs/` | Supplementary single-relation candidate; not the same method as ConsisGAD. |
 
 ## General execution notes
 

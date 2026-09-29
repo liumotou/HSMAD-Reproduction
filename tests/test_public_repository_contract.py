@@ -12,6 +12,34 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PublicRepositoryContractTests(unittest.TestCase):
+    TABLE1_BASELINES = (
+        "MLP",
+        "GCN",
+        "GAT",
+        "GraphSAGE",
+        "AMNet",
+        "BWGNN",
+        "GHRN",
+        "SparseGAD",
+        "SEC-GFD",
+        "NRGL",
+        "PC-GNN",
+        "ConsisGAD",
+        "PMP",
+        "DSGAD",
+        "CurvGAD",
+        "SpaceGNN",
+        "CGADM",
+    )
+    SUPPLEMENTARY_METHODS = (
+        "ChebNet",
+        "GIN",
+        "GWNN",
+        "SVM",
+        "CARE-GNN",
+        "GraphConsis",
+    )
+
     def test_recovered_method_entry_points_exist(self) -> None:
         required = (
             "methods/mlp/src/formal_runner.py",
@@ -100,6 +128,66 @@ class PublicRepositoryContractTests(unittest.TestCase):
             for relative in config["frozen_code_sha256"]
         }
         self.assertEqual(config["frozen_code_sha256"], actual)
+
+    def test_readmes_separate_table1_baselines_from_supplementary_methods(self) -> None:
+        def table_methods(text: str, start: str, end: str) -> list[str]:
+            section = text.split(start, 1)[1].split(end, 1)[0]
+            methods: list[str] = []
+            for line in section.splitlines():
+                if not line.startswith("|") or line.startswith("|---"):
+                    continue
+                name = line.split("|", 2)[1].strip().replace("**", "")
+                if name not in {"方法", "Method"}:
+                    methods.append(name)
+            return methods
+
+        chinese = (ROOT / "README.md").read_text(encoding="utf-8")
+        english = (ROOT / "README_EN.md").read_text(encoding="utf-8")
+        index = (ROOT / "docs/BASELINE_SCRIPTS.md").read_text(encoding="utf-8")
+
+        self.assertNotIn("> **复现定位**", chinese)
+        self.assertEqual(
+            list(self.TABLE1_BASELINES),
+            table_methods(
+                chinese,
+                "### 6.1 Table 1 baseline（17 个）",
+                "### 6.2 补充方法（不计入 Table 1 baseline）",
+            ),
+        )
+        self.assertEqual(
+            list(self.TABLE1_BASELINES),
+            table_methods(
+                english,
+                "### 6.1 Table 1 baselines (17)",
+                "### 6.2 Supplementary methods (not counted as Table 1 baselines)",
+            ),
+        )
+        self.assertEqual(
+            list(self.SUPPLEMENTARY_METHODS),
+            table_methods(
+                chinese,
+                "### 6.2 补充方法（不计入 Table 1 baseline）",
+                "详细入口见",
+            ),
+        )
+        self.assertEqual(
+            list(self.SUPPLEMENTARY_METHODS),
+            table_methods(
+                english,
+                "### 6.2 Supplementary methods (not counted as Table 1 baselines)",
+                "See [docs/BASELINE_SCRIPTS.md]",
+            ),
+        )
+        self.assertEqual(
+            list(self.TABLE1_BASELINES),
+            table_methods(index, "## Table 1 baselines (17)", "## Supplementary methods"),
+        )
+        self.assertEqual(
+            list(self.SUPPLEMENTARY_METHODS),
+            table_methods(index, "## Supplementary methods", "## General execution notes"),
+        )
+        self.assertIn("ConsisGAD", chinese)
+        self.assertIn("尚未收录", chinese)
 
 
 if __name__ == "__main__":

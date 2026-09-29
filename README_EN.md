@@ -2,11 +2,14 @@
 
 [中文](README.md) | [English](README_EN.md)
 
-This repository contains the HSMAD implementation and project-adapted Table 1 baseline runners under a shared data, frozen-split, and evaluation protocol.
+This repository publishes HSMAD, project-adapted implementations of the paper's Table 1 baselines, and the runners needed for shared splits, evaluation, and audit.
 
-> **Positioning:** unless explicitly stated otherwise, baseline implementations under `methods/` are labelled `candidate_protocol_not_author_exact`. They are auditable project adaptations, not claims of byte-identical author code or exact four-decimal reproduction.
->
-> Dataset binaries, frozen masks, checkpoints, logs, and formal result artifacts are intentionally excluded from Git. This repository publishes sources, configurations, provenance links, and usage instructions.
+## Repository scope and reproduction policy
+
+- `HSMAD` is the main method. The paper's Table 1 contains **17 baselines**, for 18 in-table methods in total.
+- Unless stated otherwise, implementations under `methods/` use the `candidate_protocol_not_author_exact` label: they are auditable project adaptations, not claims of byte-identical author code or exact reproduction of every reported decimal.
+- ChebNet, GIN, GWNN, SVM, CARE-GNN, and GraphConsis are supplementary methods retained in this repository and are not counted among the 17 Table 1 baselines.
+- Dataset binaries, frozen masks, checkpoints, logs, and formal result artifacts are intentionally excluded from Git. The repository publishes sources, configurations, provenance links, and usage instructions.
 
 ## 1. Objective
 
@@ -92,34 +95,42 @@ The repository preserves actual progress rather than filling an artificial matri
 
 Missing cells mean `INCOMPLETE` or `BLOCKED`; they do not mean low-scoring seeds were removed.
 
-## 6. Baseline readiness
+## 6. Method code coverage
 
-| Method | Entry point | Note |
+The HSMAD entry point is `main.py`; it is not counted among the 17 baselines below. The list follows the paper's Table 1 exactly so supplementary repository experiments do not inflate the baseline count.
+
+### 6.1 Table 1 baselines (17)
+
+| Method | Code status | Main entry point | Note |
+|---|---|---|---|
+| MLP | Entry provided | `methods/mlp/src/formal_runner.py` | Feature-only project candidate |
+| GCN | Entry provided | `methods/gcn/src/run_kipf_v2.py` | Kipf two-layer project candidate |
+| GAT | Entry provided | `methods/gat_v2_gadbench/src/run_formal.py` | Current primary candidate; `methods/gat/` retains an earlier diagnostic implementation, but both count as one baseline |
+| GraphSAGE | Entry provided | `methods/graphsage/src/run_formal.py` | GADBench pool project candidate |
+| AMNet | Entry provided | `methods/amnet_hsmad/run_full.py` | Requires an isolated legacy CUDA 11/PyG environment |
+| BWGNN | Entry provided | `methods/bwgnn/src/run_formal.py` | Project-adapted candidate |
+| GHRN | Entry provided | `methods/ghrn/src/runner.py` | Project-adapted candidate |
+| SparseGAD | Entry provided | `methods/sparsegad/src/run_formal.py` | Project-adapted candidate |
+| SEC-GFD | Entry provided | `methods/sec_gfd/src/runner.py` | Selected-dataset candidate |
+| NRGL | Code/API provided | `run(...)` in `methods/nrgl/src/runner.py` | No standalone CLI main in this snapshot |
+| PC-GNN | Entry provided | `methods/pcgnn/src/run.py` | Single-relation adapted candidate |
+| ConsisGAD | Not included | — | No ConsisGAD implementation is currently present; GraphConsis is not a substitute |
+| PMP | Entry provided | `methods/pmp_hsmad/src/runner.py` | Frozen HSMAD protocol candidate |
+| DSGAD | Entry provided | `methods/dsgad/src/runner.py` | Project-adapted candidate |
+| CurvGAD | Partial code | `methods/curvgad_hsmad/src/` | Precomputation/adaptation code is retained, but no executable formal runner is available |
+| SpaceGNN | Entry provided | `methods/spacegnn_hsmad/src/runner.py` | Project-adapted candidate |
+| CGADM | Entry provided | `methods/cgadm_hsmad/src/runner.py` | HSMAD-data adapter candidate |
+
+### 6.2 Supplementary methods (not counted as Table 1 baselines)
+
+| Method | Main entry point | Note |
 |---|---|---|
-| HSMAD | `main.py` | Main project method |
-| MLP | `methods/mlp/src/formal_runner.py` | Feature-only server experiment source recovered |
-| GCN | `methods/gcn/src/run_kipf_v2.py` | Kipf two-layer candidate |
-| ChebNet | `methods/chebnet/src/run.py` | PyG candidate protocol |
-| GIN | `methods/gin/src/run.py` | PyG candidate protocol |
-| GWNN | `methods/gwnn/src/run.py` | Paper-formula candidate protocol |
-| GAT v1 | smoke/diagnostic runners | Archived diagnostic candidate |
-| GAT-v2 | `methods/gat_v2_gadbench/src/run_*.py` | GADBench-structure adaptation |
-| GraphSAGE | `methods/graphsage/src/run_smoke.py`, `run_formal.py` | GADBench pool candidate |
-| GraphConsis | `methods/graphconsis/src/run.py` | Single-relation adapted candidate |
-| CARE-GNN | `methods/caregnn/src/run.py` | Single-relation adapted candidate |
-| PC-GNN | `methods/pcgnn/src/run.py` | Single-relation adapted candidate |
-| BWGNN | `methods/bwgnn/src/run_smoke.py`, `run_formal.py` | Project-adapted candidate |
-| SparseGAD | `methods/sparsegad/src/run_smoke.py`, `run_formal.py` | Project-adapted candidate |
-| SVM | `methods/svm/src/runner.py` | Feature-only candidate |
-| SEC-GFD | `methods/sec_gfd/src/runner.py` | Selected-dataset candidate |
-| GHRN | `methods/ghrn/src/runner.py` | Project-adapted candidate |
-| CGADM | `methods/cgadm_hsmad/src/runner.py` | HSMAD-data adapter |
-| DSGAD | `methods/dsgad/src/runner.py` | Project-adapted candidate |
-| NRGL | Python API `run(...)` | No standalone CLI main in this snapshot |
-| CurvGAD | partial components | Known architecture/shape blocker |
-| SpaceGNN | `methods/spacegnn_hsmad/src/runner.py` | Weibo candidate completed; other combinations retain blocker evidence |
-| AMNet | `methods/amnet_hsmad/run_smoke.py`, `run_full.py` | Isolated CUDA 11 ABI environment required |
-| PMP | `methods/pmp_hsmad/src/runner.py` | Frozen HSMAD protocol candidate |
+| ChebNet | `methods/chebnet/src/run.py` | Supplementary PyG candidate |
+| GIN | `methods/gin/src/run.py` | Supplementary PyG candidate |
+| GWNN | `methods/gwnn/src/run.py` | Supplementary paper-formula candidate |
+| SVM | `methods/svm/src/runner.py` | Supplementary feature-only candidate |
+| CARE-GNN | `methods/caregnn/src/run.py` | Supplementary single-relation candidate |
+| GraphConsis | `methods/graphconsis/src/run.py` | Supplementary single-relation candidate; not the same method as Table 1's ConsisGAD |
 
 See [docs/BASELINE_SCRIPTS.md](docs/BASELINE_SCRIPTS.md) for the detailed index.
 
