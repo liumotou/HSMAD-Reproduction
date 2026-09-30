@@ -344,10 +344,6 @@ python -m methods.ghrn.src.runner \
 
 并非每个项目适配都能对应一个已独立核验的公开官方仓库。其余方法的固定 commit、配置来源或官方快照证据保存在对应的 `methods/<method>/configs/`、`methods/<method>/audit/` 或 `methods/<method>/official_snapshot/` 中；缺少已核验 URL 时不在此猜测链接。ConsisGAD 当前没有代码，也没有以 GraphConsis 替代。
 
-## 13. 发布与许可证边界
+## 13. 引用说明
 
-- 本仓库当前没有项目级 `LICENSE` 或 `CITATION.cff`；这不等于授予任意再分发权利。
-- `official_snapshot/` 中的第三方代码仍受其上游许可证约束，使用或再发布前应逐项核对原仓库许可。
-- 论文、数据集和各 baseline 的引用责任不会因代码被整理到本仓库而消失。
-
-使用数据或方法时，请同时引用相应论文与官方仓库。
+本仓库主要用于学术研究与实验复现。使用本项目时，建议引用 HSMAD 论文；使用具体数据集或 baseline 时，请同时引用相应论文或官方仓库。第三方代码的许可说明以其原始仓库为准。

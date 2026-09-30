@@ -295,10 +295,6 @@ Do not mix smoke/diagnostic artifacts into formal summaries, remove low-scoring 
 
 Not every project adaptation maps to an independently verified public official repository. Fixed commits, configuration provenance, and retained source evidence for the remaining methods live under the corresponding `methods/<method>/configs/`, `methods/<method>/audit/`, or `methods/<method>/official_snapshot/` directory. This README does not guess an upstream URL when one has not been verified. ConsisGAD is not present and is not replaced by GraphConsis.
 
-## 12. Release and licensing boundary
+## 12. Citation
 
-- This repository currently has no project-wide `LICENSE` or `CITATION.cff`; absence of a license does not grant unrestricted redistribution rights.
-- Third-party code under `official_snapshot/` remains subject to its upstream license. Check every upstream repository before use or redistribution.
-- Papers, datasets, and baseline implementations must still be cited even when their code is organized in this repository.
-
-Please cite the corresponding papers and official repositories when using any method or dataset.
+This repository is intended primarily for academic research and experimental reproduction. If you use this project, please consider citing the HSMAD paper. When using a specific dataset or baseline, please also cite its corresponding paper or official repository. Licensing terms for third-party code remain governed by the original upstream repositories.
