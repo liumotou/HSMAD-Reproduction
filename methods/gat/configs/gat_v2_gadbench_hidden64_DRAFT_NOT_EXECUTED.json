@@ -1,0 +1,42 @@
+{
+  "status": "DRAFT_NOT_EXECUTED",
+  "method": "GAT",
+  "protocol_version": "PROPOSED_gat_v2_gadbench_hidden64",
+  "purpose": "Unexecuted configuration draft only; it is not a runnable experiment authorization.",
+  "model_source": {
+    "repository": "https://github.com/squareroot3/GADBench.git",
+    "commit": "f9aa021ce9b6c6580427fb633b596843be76ddc6",
+    "model_file": "models/attention.py",
+    "model_file_sha256": "194dae9f7af7057fc17e954263996a232b830ca25a429686146bbbde65611e08"
+  },
+  "model": {
+    "architecture": "GADBench BaseModel + 2 residual GATModule blocks + FFN + final Linear logits",
+    "hidden_total_dim": 64,
+    "num_heads": 4,
+    "per_head_dim": 16,
+    "num_gat_modules": 2,
+    "activation": "GELU",
+    "attention_negative_slope": 0.2,
+    "output": "Linear(64, 2) logits",
+    "bias": "GADBench nn.Linear defaults; attn_linear_v bias=False"
+  },
+  "training_source_candidate": {
+    "optimizer": "Adam",
+    "learning_rate": 0.01,
+    "weight_decay": 0.0,
+    "drop_rate": 0.0,
+    "class_weight": "[1.0, train_normal_count/train_anomaly_count]",
+    "max_epoch": 200,
+    "patience": 50,
+    "early_stop_metric": "validation_AUPRC",
+    "checkpoint_metric": "validation_AUPRC"
+  },
+  "project_unified_requirements": {
+    "datasets_and_masks": "existing verified HSMAD datasets and frozen masks only",
+    "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+    "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95",
+    "test_metrics": ["F1_macro", "AUROC_softmax_logits_class_1"]
+  },
+  "provenance_note": "hidden_total_dim=64 is the HSMAD requirement mapped onto GADBench h_feats semantics; HSMAD does not publish GAT heads, residual/FFN, dropout, class-weight, epoch, patience, or checkpoint details."
+}

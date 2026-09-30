@@ -1,0 +1,19 @@
+{
+  "method": "SparseGAD-HSMAD-adapted-h64",
+  "protocol_version": "sparsegad_h64_candidate",
+  "positioning": "candidate_protocol_not_author_exact",
+  "dataset": "weibo",
+  "dataset_file": "datasets/weibo",
+  "result_root": "results/experiments/sparsegad/weibo/sparsegad_h64_candidate",
+  "hidden_dim": 64,
+  "num_layers": 2,
+  "dropout": 0.2,
+  "dropout_adj": 0.1,
+  "class_weight": "none_official_unweighted_nll",
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0005,
+  "graph_preprocess": "to_bidirected -> remove_self_loop -> add_self_loop",
+  "edge_access": "graph_edges_required",
+  "expected": {"nodes": 8405, "training_edges": 762947}
+}

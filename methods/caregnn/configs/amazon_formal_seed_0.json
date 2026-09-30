@@ -1,0 +1,38 @@
+{
+  "batch_size": 256,
+  "batch_size_source": "official_amazon_default",
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auprc_project_choice",
+  "dataset": "amazon",
+  "dataset_file": "datasets/amazon",
+  "expected": {
+    "nodes": 11944,
+    "training_edges": 8808728
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "25f77cdd9f5991c575ce5efd385aec86e30123585e9b87c1da0bcb25d5f67872",
+    "feature_sha256": "063d12c2db83b93229574fff15c7c65c8b2f6e1a686f7c7e0212722c583742ad",
+    "label_sha256": "d5e3de05cedaaabbde98665fd6ba21de71cea2831d0998ea766f8f8773cd83c5",
+    "test_mask_sha256": "bc42f2677dbf8357e949a30330b0236fbe6435c91583aa0232a249a20f95e9d1",
+    "train_mask_sha256": "fb95bd68eda65b33435b2214bd1ceff41dfa324b5fbed8bcfeb72a1950ca0c4a",
+    "val_mask_sha256": "2175e7133a0b272f26416cf46b11e08b771d899af50d222724036ed090d9acfb"
+  },
+  "feature_preprocess": "official_row_l2_normalize",
+  "hidden_dim": 64,
+  "lambda_1": 2.0,
+  "learning_rate": 0.01,
+  "max_epoch": 31,
+  "method": "CARE-GNN",
+  "optimizer": "Adam",
+  "patience": 10,
+  "protocol_version": "caregnn_official_single_flattened_relation_h64_candidate",
+  "relation_policy": "single_flattened_relation_project_adaptation",
+  "result_dir": "results/experiments/caregnn/amazon/caregnn_official_single_flattened_relation_h64_candidate/formal/seed_0",
+  "rl_step_size": 0.02,
+  "run_type": "formal",
+  "seed": 0,
+  "source_commit": "a64ff7523e187a24251f7ca88435d2c9d8f7dcd9",
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "uncovered_prefix_nodes": 3305,
+  "weight_decay": 0.001
+}

@@ -1,0 +1,52 @@
+{
+  "method": "GAT",
+  "protocol_version": "protocol_v1_original_gat_8x8_hidden64",
+  "dataset": "weibo",
+  "dataset_file": "datasets/weibo",
+  "run_type": "smoke",
+  "seed": 0,
+  "result_dir": "results/experiments/gat/weibo/protocol_v1_original_gat_8x8_hidden64/smoke/seed_0",
+  "max_epoch": 5,
+  "input_dim": 400,
+  "hidden_heads": 8,
+  "hidden_features_per_head": 8,
+  "hidden_concat_dim": 64,
+  "output_heads": 1,
+  "output_dim": 2,
+  "hidden_activation": "ELU",
+  "attention_negative_slope": 0.2,
+  "feature_dropout": 0.6,
+  "attention_dropout": 0.6,
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0005,
+  "class_weight": "none",
+  "edge_access": "graph_edges_required",
+  "graph_preprocess": ["to_bidirected", "remove_self_loop", "add_self_loop"],
+  "threshold_protocol": "validation_F1_macro_grid_0.05_to_0.95",
+  "checkpoint_protocol": "smoke_final_epoch_5",
+  "expected_training_graph_edges": 762947,
+  "expected_hashes": {
+    "feature_sha256": "ea596cb6982c8cfcbab8a420fecf571dd258e22d4022007a2121a4b948afaa45",
+    "label_sha256": "4ae5a95b9a52b7b065144f91c13036785fb60115748b886d5e266509ac2b3ec8",
+    "train_mask_sha256": "017423ff367b7e4580e4a705e86c056394a6a4abf448af1e037340ef104abe86",
+    "val_mask_sha256": "4c04ebc905a8a7790b506488f75a9ef405681d7cfb27b740349a987047a1244c",
+    "test_mask_sha256": "e00c8e697ed4828a6ab12d64df73f9d1c639638c482f94bcbef87a5313d985f2"
+  },
+  "source_reference": {
+    "repository": "https://github.com/PetarV-/GAT",
+    "commit": "5af87e7fce2b90ae1cbd621cd58059036a3c7436",
+    "models_gat_py_sha256": "8c45aa1817216fe5d6c249ddc8df121f1c47b8147e1f9c28f68ece494e715e0d",
+    "layers_py_sha256": "18c2277bc97c7d0df34e157c39149cb393888c50492cd6b5294201815477dd12"
+  },
+  "parameter_sources": {
+    "head_topology": "original_GAT_Cora_layout",
+    "feature_dropout": "original_GAT_Cora_layout",
+    "attention_dropout": "original_GAT_Cora_layout",
+    "attention_negative_slope": "original_GAT",
+    "weight_decay": "original_GAT_Cora_layout",
+    "optimizer": "HSMAD_paper_section_5_1",
+    "learning_rate": "HSMAD_paper_section_5_1",
+    "hidden_concat_dim": "HSMAD_paper_section_5_1"
+  }
+}

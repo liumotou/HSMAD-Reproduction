@@ -1,0 +1,37 @@
+{
+  "batch_size": 1024,
+  "batch_size_source": "project_choice_using_official_yelp_default_because_weibo_is_unpublished",
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auprc_project_choice",
+  "dataset": "weibo",
+  "dataset_file": "datasets/weibo",
+  "expected": {
+    "nodes": 8405,
+    "training_edges": 762947
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "358e5cdb188ae0d5ebf50b25fb3c1a3d12c716c2ebaa5d5652e1277bb5617a19",
+    "feature_sha256": "ea596cb6982c8cfcbab8a420fecf571dd258e22d4022007a2121a4b948afaa45",
+    "label_sha256": "4ae5a95b9a52b7b065144f91c13036785fb60115748b886d5e266509ac2b3ec8",
+    "test_mask_sha256": "e00c8e697ed4828a6ab12d64df73f9d1c639638c482f94bcbef87a5313d985f2",
+    "train_mask_sha256": "017423ff367b7e4580e4a705e86c056394a6a4abf448af1e037340ef104abe86",
+    "val_mask_sha256": "4c04ebc905a8a7790b506488f75a9ef405681d7cfb27b740349a987047a1244c"
+  },
+  "feature_preprocess": "official_row_l2_normalize",
+  "hidden_dim": 64,
+  "lambda_1": 2.0,
+  "learning_rate": 0.01,
+  "max_epoch": 31,
+  "method": "CARE-GNN",
+  "optimizer": "Adam",
+  "patience": 10,
+  "protocol_version": "caregnn_official_single_flattened_relation_h64_candidate",
+  "relation_policy": "single_flattened_relation_project_adaptation",
+  "result_dir": "results/experiments/caregnn/weibo/caregnn_official_single_flattened_relation_h64_candidate/formal/seed_6",
+  "rl_step_size": 0.02,
+  "run_type": "formal",
+  "seed": 6,
+  "source_commit": "a64ff7523e187a24251f7ca88435d2c9d8f7dcd9",
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "weight_decay": 0.001
+}

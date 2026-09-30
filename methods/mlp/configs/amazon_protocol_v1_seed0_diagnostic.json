@@ -1,0 +1,13 @@
+{
+  "protocol_version": "v1_seed0_diagnostic",
+  "method": "MLP", "dataset": "amazon", "run_type": "diagnostic", "seed": 0,
+  "model": "FeatureMLP", "architecture": "input_dim -> 64 -> 2", "input_dim": 25,
+  "activation": "ReLU", "hidden_dim": 64, "dropout": 0.5,
+  "loss": "CrossEntropyLoss", "class_weight": null, "sampling": "none",
+  "optimizer": "Adam", "learning_rate": 0.01, "weight_decay": 0.00001,
+  "max_epoch": 1000, "patience": 100, "selection_metric": "validation F1-Macro",
+  "threshold_candidates": [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95],
+  "edge_access": "none", "amazon_excluded_prefix_nodes": 3305,
+  "paper_target": {"f1_macro": 0.9223, "auroc": 0.9801},
+  "sources": {"adam_learning_rate_hidden_dim": "HSMAD paper unified setting", "network_definition": "GADBench commit f9aa021ce9b6c6580427fb633b596843be76ddc6 models/gnn.py::MLP", "remaining": "project frozen MLP v1 baseline protocol"}
+}

@@ -1,0 +1,31 @@
+{
+  "method": "ChebNet",
+  "protocol_version": "chebnet_h64_candidate",
+  "candidate_protocol_not_author_exact": true,
+  "dataset": "weibo",
+  "dataset_file": "datasets/weibo",
+  "seed": 0,
+  "run_type": "smoke",
+  "result_dir": "results/experiments/chebnet/weibo/chebnet_h64_candidate/smoke/seed_0",
+  "hidden_dim": 64,
+  "order": 2,
+  "dropout": 0.0,
+  "class_weight": "none",
+  "optimizer": "Adam",
+  "learning_rate": 0.01,
+  "weight_decay": 0.0,
+  "max_epoch": 5,
+  "patience": 50,
+  "graph_preprocess": "to_bidirected -> remove_self_loop -> add_self_loop",
+  "checkpoint_protocol": "validation_auprc_best",
+  "early_stop_protocol": "validation_auprc",
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "edge_access": "graph_edges_required",
+  "sources": {
+    "hidden_dim": "HSMAD paper section 5.1",
+    "optimizer_learning_rate": "HSMAD paper section 5.1",
+    "operator": "official PyG ChebConv",
+    "order_layers_dropout_weight_decay_selection": "project candidate choice; HSMAD not published"
+  },
+  "expected": {"nodes": 8405, "training_edges": 762947}
+}

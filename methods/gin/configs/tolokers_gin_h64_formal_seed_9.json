@@ -1,0 +1,42 @@
+{
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auprc_best",
+  "class_weight": "none",
+  "dataset": "tolokers",
+  "dataset_file": "datasets/tolokers",
+  "dropout": 0.0,
+  "early_stop_protocol": "validation_auprc",
+  "edge_access": "graph_edges_required",
+  "expected": {
+    "nodes": 11758,
+    "training_edges": 1049758
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "1d400b4cdced54b25c394cc3d258921f443f04b2ae2e09bbb70fbc7073ed0b65",
+    "feature_sha256": "d70a2b3d04774f11e8d8e94f659b493c7cb86eae0c22bdfbecd2e36fc0577809",
+    "label_sha256": "808c63a620abae774a7614459d9bfe6a258ee3460f2e39ca0511c59dbf553518",
+    "test_mask_sha256": "5fc331d7846b8f113c954295f8c9503209157d8a6393e5520de4ff029a6c1662",
+    "train_mask_sha256": "4f298168b1a4d72eedf0f4594d1deb196ddb6e1c80ee95058dd8c05da1bb10af",
+    "training_graph_edges_sha256": "cd31edb3f4895e21e7e55f5938bb23109906306965fa095252d25605add69365",
+    "val_mask_sha256": "bf4c7797ce28dc6a47a51c2389ad56f86538c5fa852113de76a17eaaaba9bb36"
+  },
+  "graph_preprocess": "to_bidirected -> remove_self_loop -> add_self_loop",
+  "hidden_dim": 64,
+  "learning_rate": 0.01,
+  "max_epoch": 200,
+  "method": "GIN",
+  "optimizer": "Adam",
+  "order": 2,
+  "patience": 50,
+  "protocol_version": "gin_h64_candidate",
+  "result_dir": "results/experiments/gin/tolokers/gin_h64_candidate/formal/seed_9",
+  "run_type": "formal",
+  "seed": 9,
+  "sources": {
+    "hidden_dim_optimizer_lr": "HSMAD section 5.1",
+    "operator": "official PyG GINConv",
+    "two_layers_mlp_epsilon_dropout_weight_decay_selection": "project candidate choice; HSMAD not published"
+  },
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "weight_decay": 0.0
+}

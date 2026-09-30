@@ -1,0 +1,11 @@
+{
+  "protocol_version": "v4_class_weight_dropout_zero_probe",
+  "method": "MLP", "dataset": "weibo", "run_type": "probe", "model": "FeatureMLP",
+  "architecture": "input_dim -> 64 -> 2", "activation": "ReLU", "hidden_dim": 64,
+  "dropout": 0.0, "loss": "CrossEntropyLoss",
+  "class_weight": {"enabled": true, "formula": "[1.0, train_normal_count / train_anomaly_count]", "expected": [1.0, 8.688760806916427], "label_mapping": {"normal": 0, "anomaly": 1}, "source": "GADBench reference commit f9aa021ce9b6c6580427fb633b596843be76ddc6", "claim_boundary": "This does not establish HSMAD authors original Table 1 MLP configuration."},
+  "sampling": "none", "optimizer": "Adam", "learning_rate": 0.01, "weight_decay": 0.00001,
+  "max_epoch": 1000, "patience": 100, "selection_metric": "validation F1-Macro",
+  "threshold_candidates": [0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95],
+  "training_seeds": [0], "edge_access": "none", "v1_config_path": "methods/mlp/configs/weibo_formal.json"
+}

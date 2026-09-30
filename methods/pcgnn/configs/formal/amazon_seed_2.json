@@ -1,0 +1,41 @@
+{
+  "alpha": 2.0,
+  "batch_size": 256,
+  "batch_size_source": "official_pcgnn_amazon_default",
+  "candidate_protocol_not_author_exact": true,
+  "checkpoint_protocol": "validation_auroc_official_pcgnn",
+  "dataset": "amazon",
+  "dataset_file": "datasets/amazon",
+  "expected": {
+    "nodes": 11944,
+    "training_edges": 8808728
+  },
+  "expected_hashes": {
+    "dataset_file_sha256": "25f77cdd9f5991c575ce5efd385aec86e30123585e9b87c1da0bcb25d5f67872",
+    "feature_sha256": "063d12c2db83b93229574fff15c7c65c8b2f6e1a686f7c7e0212722c583742ad",
+    "label_sha256": "d5e3de05cedaaabbde98665fd6ba21de71cea2831d0998ea766f8f8773cd83c5",
+    "test_mask_sha256": "bc42f2677dbf8357e949a30330b0236fbe6435c91583aa0232a249a20f95e9d1",
+    "train_mask_sha256": "fb95bd68eda65b33435b2214bd1ceff41dfa324b5fbed8bcfeb72a1950ca0c4a",
+    "val_mask_sha256": "2175e7133a0b272f26416cf46b11e08b771d899af50d222724036ed090d9acfb"
+  },
+  "feature_preprocess": "official_row_sum_normalize",
+  "hidden_dim": 64,
+  "learning_rate": 0.01,
+  "learning_rate_source": "HSMAD_paper_override_of_official_pcgnn_amazon_0.005",
+  "max_epoch": 51,
+  "method": "PC-GNN",
+  "optimizer": "Adam",
+  "protocol_version": "pcgnn_official_single_flattened_relation_h64_candidate",
+  "relation_policy": "single_flattened_relation_project_adaptation",
+  "relation_threshold": 0.5,
+  "result_dir": "results/experiments/pcgnn/amazon/pcgnn_official_single_flattened_relation_h64_candidate/formal/seed_2",
+  "rho": 0.5,
+  "run_type": "formal",
+  "seed": 2,
+  "source_commit": "9d7d7fae491081178b6e12e193fb89cfc330f2be",
+  "threshold_protocol": "validation_f1_macro_grid_0.05_to_0.95",
+  "uncovered_prefix_nodes": 3305,
+  "validation_interval": 5,
+  "weight_decay": 0.0005,
+  "weight_decay_source": "official_pcgnn_amazon_default"
+}
