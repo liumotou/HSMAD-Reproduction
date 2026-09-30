@@ -241,6 +241,66 @@ class PublicRepositoryContractTests(unittest.TestCase):
         self.assertIn("ConsisGAD", chinese)
         self.assertIn("尚未收录", chinese)
 
+    def test_known_batch_import_duplicates_are_removed(self) -> None:
+        removed_duplicates = (
+            "methods/cgadm/official_snapshot/diffuse.py",
+            "methods/gat/run_smoke.py",
+            "methods/gat_v2_gadbench/run_amazon_diagnostic.py",
+            "methods/gcn/configs/preflight_protocol_v2.py",
+            "methods/bwgnn/src/test_runner_contract.py",
+            "methods/graphconsis/configs/weibo_single_relation_smoke.json",
+        )
+        remaining = [relative for relative in removed_duplicates if (ROOT / relative).exists()]
+        self.assertEqual([], remaining, f"redundant imported copies remain: {remaining}")
+
+        curvgad_readme = (
+            ROOT / "methods/curvgad/official_snapshot/README.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("Intentional vendored overlap", curvgad_readme)
+        self.assertIn("audit/mlp_reference/GADBench/models/gnn.py", curvgad_readme)
+
+    def test_project_plan_uses_neutral_docs_directory(self) -> None:
+        plan = ROOT / "docs/plans/2026-09-28-repository-portability-fixes.md"
+        self.assertTrue(plan.is_file())
+        self.assertFalse((ROOT / "docs/superpowers").exists())
+
+    def test_third_party_notices_cover_retained_source_snapshots(self) -> None:
+        notice_path = ROOT / "THIRD_PARTY_NOTICES.md"
+        self.assertTrue(notice_path.is_file())
+        notice = notice_path.read_text(encoding="utf-8")
+        retained = [
+            path.relative_to(ROOT).as_posix()
+            for pattern in ("methods/**/official_snapshot", "methods/**/official_source")
+            for path in ROOT.glob(pattern)
+            if path.is_dir()
+        ]
+        retained.extend(
+            (
+                "audit/mlp_reference/GADBench",
+                "methods/gat/audit/reference/PetarV-GAT",
+            )
+        )
+        missing = sorted(relative for relative in retained if f"`{relative}`" not in notice)
+        self.assertEqual([], missing, f"vendored source missing from THIRD_PARTY_NOTICES: {missing}")
+        self.assertIn("upstream license", notice.lower())
+        self.assertIn("redistribution", notice.lower())
+        self.assertIn("MIT", notice)
+        bundled_licenses = (
+            "methods/curvgad/official_snapshot/LICENSE",
+            "methods/gat/audit/reference/PetarV-GAT/LICENSE",
+        )
+        for relative in bundled_licenses:
+            self.assertTrue((ROOT / relative).is_file(), relative)
+
+    def test_minimal_ci_runs_contract_tests_and_static_validator(self) -> None:
+        workflow_path = ROOT / ".github/workflows/repository-validation.yml"
+        self.assertTrue(workflow_path.is_file())
+        workflow = workflow_path.read_text(encoding="utf-8")
+        self.assertRegex(workflow, r"(?m)^\s*push:\s*$")
+        self.assertRegex(workflow, r"(?m)^\s*pull_request:\s*$")
+        self.assertIn("python -m pytest tests/ -q", workflow)
+        self.assertIn("python scripts/validate_repository.py", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

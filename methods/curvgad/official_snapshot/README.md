@@ -1,5 +1,13 @@
 # CurvGAD: Leveraging Curvature for Enhanced Graph Anomaly Detection
 
+> **Intentional vendored overlap.** `models/gnn.py` is kept inside this pinned
+> CurvGAD snapshot so the upstream source tree remains auditable and internally
+> importable. Its bytes currently overlap with
+> `audit/mlp_reference/GADBench/models/gnn.py`; the latter is the separate,
+> authoritative GADBench reference used by the adapted baseline runners. Do not
+> edit one copy and assume the other changed. See the repository-root
+> `THIRD_PARTY_NOTICES.md` for provenance and redistribution status.
+
 [![Paper](https://img.shields.io/badge/Paper-arXiv-red)](https://arxiv.org/abs/2502.08605)
 [![Conference](https://img.shields.io/badge/Conference-ICML%202025-blue)](https://icml.cc/Conferences/2025)
 

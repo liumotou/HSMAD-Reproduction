@@ -10,7 +10,7 @@ class GraphConsisRunnerContractTest(unittest.TestCase):
     def test_weibo_smoke_config_and_refuse_overwrite(self):
         from methods.graphconsis.src.run import build_run_spec, ensure_new_output, load_config
 
-        config = load_config(Path("methods/graphconsis/configs/weibo_single_relation_smoke.json"))
+        config = load_config(Path("methods/graphconsis/configs/weibo_graphconsis_single_relation_smoke.json"))
         spec = build_run_spec(config)
         self.assertEqual((spec.dataset, spec.seed, spec.run_type, spec.max_epoch), ("weibo", 0, "smoke", 5))
         self.assertEqual(config["source_commit"], "22b72d75f81dd057762f0c7225a4558a25095b8f")

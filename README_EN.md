@@ -297,4 +297,4 @@ Not every project adaptation maps to an independently verified public official r
 
 ## 12. Citation
 
-This repository is intended primarily for academic research and experimental reproduction. If you use this project, please consider citing the HSMAD paper. When using a specific dataset or baseline, please also cite its corresponding paper or official repository. Licensing terms for third-party code remain governed by the original upstream repositories.
+This repository is intended primarily for academic research and experimental reproduction. If you use this project, please consider citing the HSMAD paper. When using a specific dataset or baseline, please also cite its corresponding paper or official repository. The root [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) records each retained third-party source tree, pinned revision, and license status; this project's Apache-2.0 license does not automatically cover those materials.
