@@ -97,6 +97,31 @@ class PublicRepositoryContractTests(unittest.TestCase):
                 offenders.append(relative.as_posix())
         self.assertEqual([], offenders, f"generated/binary artifacts must not be published: {offenders}")
 
+    def test_tracked_markdown_local_links_resolve(self) -> None:
+        missing: list[str] = []
+        tracked = subprocess.run(
+            ["git", "ls-files", "-z", "*.md"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        ).stdout.split(b"\0")
+        link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+        for raw_relative in tracked:
+            if not raw_relative:
+                continue
+            relative = Path(raw_relative.decode("utf-8"))
+            if "official_snapshot" in relative.parts:
+                continue
+            path = ROOT / relative
+            text = path.read_text(encoding="utf-8", errors="replace")
+            for target in link_pattern.findall(text):
+                if target.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                local_target = target.split("#", 1)[0]
+                if local_target and not (path.parent / local_target).exists():
+                    missing.append(f"{relative.as_posix()} -> {target}")
+        self.assertEqual([], missing, f"broken local Markdown links: {missing}")
+
     def test_mlp_sources_use_package_qualified_imports(self) -> None:
         offenders: list[str] = []
         pattern = re.compile(r"^from (model|train|utils) import ", re.MULTILINE)
